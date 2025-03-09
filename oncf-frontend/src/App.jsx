@@ -20,6 +20,12 @@ import FicheForm from "./pages/fiches/FicheForm";
 import CartesList from "./pages/cartes/CartesList";
 import CarteForm from "./pages/cartes/CarteForm";
 
+// Import Controleur
+import ControleursList from "./pages/controleurs/ControleursList";
+import ControleurDetails from "./pages/controleurs/ControleurDetails";
+import ControleurForm from "./pages/controleurs/ControleurForm";
+
+
 function App() {
   return (
     <AuthProvider>
@@ -59,6 +65,13 @@ function App() {
             
             {/* Catch-all route for protected area */}
             <Route path="*" element={<NotFound />} />
+          </Route>
+
+          <Route path="controleurs">
+             <Route index element={<ControleursList />} />
+             <Route path=":id/details" element={<ControleurDetails />} />
+             <Route path=":id/edit" element={<ControleurForm />} />
+             <Route path="new" element={<ControleurForm />} />
           </Route>
           
           {/* Catch-all route for the entire app */}

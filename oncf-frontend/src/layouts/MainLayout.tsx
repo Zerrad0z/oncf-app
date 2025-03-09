@@ -55,6 +55,7 @@ const MainLayout: React.FC = () => {
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
     { text: 'Employees', icon: <PeopleIcon />, path: '/employees' },
+    { text: 'Controleurs', icon: <PeopleIcon />, path: '/controleurs' }, 
     { text: 'Epaves', icon: <InventoryIcon />, path: '/epaves' },
     { text: 'Fiches d\'infraction', icon: <DescriptionIcon />, path: '/fiche-infractions' },
     { text: 'Cartes périmées', icon: <CreditCardIcon />, path: '/carte-perimees' },

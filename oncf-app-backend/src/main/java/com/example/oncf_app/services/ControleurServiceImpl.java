@@ -1,9 +1,11 @@
 package com.example.oncf_app.services;
 
 import com.example.oncf_app.dtos.ControleurDTO;
+import com.example.oncf_app.entities.Antenne;
 import com.example.oncf_app.entities.Controleur;
 import com.example.oncf_app.exceptions.ApiException;
 import com.example.oncf_app.mappers.ControleurMapper;
+import com.example.oncf_app.repositories.AntenneRepository;
 import com.example.oncf_app.repositories.ControleurRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 public class ControleurServiceImpl implements ControleurService {
 
     private final ControleurRepository controleurRepository;
+    private final AntenneRepository antenneRepository;
     private final ControleurMapper controleurMapper;
 
     @Override
@@ -32,6 +35,54 @@ public class ControleurServiceImpl implements ControleurService {
         Controleur controleur = controleurRepository.findById(id)
                 .orElseThrow(() -> ApiException.notFound("Controleur", id));
         return controleurMapper.toDto(controleur);
+    }
+
+    @Override
+    public ControleurDTO saveControleur(ControleurDTO controleurDTO) {
+        // Check if controleur already exists
+        if (controleurRepository.existsById(controleurDTO.getId())) {
+            throw new RuntimeException("Un contrôleur avec cet identifiant existe déjà.");
+        }
+
+        Controleur controleur = controleurMapper.toEntity(controleurDTO);
+
+        // Set antenne relationship
+        if (controleurDTO.getAntenneId() != null) {
+            Antenne antenne = antenneRepository.findById(controleurDTO.getAntenneId())
+                    .orElseThrow(() -> ApiException.notFound("Antenne", controleurDTO.getAntenneId()));
+            controleur.setAntenne(antenne);
+        }
+
+        Controleur savedControleur = controleurRepository.save(controleur);
+        return controleurMapper.toDto(savedControleur);
+    }
+
+    @Override
+    public ControleurDTO updateControleur(Long id, ControleurDTO controleurDTO) {
+        Controleur existingControleur = controleurRepository.findById(id)
+                .orElseThrow(() -> ApiException.notFound("Controleur", id));
+
+        // Only update certain fields
+        existingControleur.setNom(controleurDTO.getNom());
+        existingControleur.setPrenom(controleurDTO.getPrenom());
+
+        // Update antenne if needed
+        if (controleurDTO.getAntenneId() != null) {
+            Antenne antenne = antenneRepository.findById(controleurDTO.getAntenneId())
+                    .orElseThrow(() -> ApiException.notFound("Antenne", controleurDTO.getAntenneId()));
+            existingControleur.setAntenne(antenne);
+        }
+
+        Controleur updatedControleur = controleurRepository.save(existingControleur);
+        return controleurMapper.toDto(updatedControleur);
+    }
+
+    @Override
+    public void deleteControleur(Long id) {
+        if (!controleurRepository.existsById(id)) {
+            throw ApiException.notFound("Controleur", id);
+        }
+        controleurRepository.deleteById(id);
     }
 
     @Override
@@ -53,6 +104,39 @@ public class ControleurServiceImpl implements ControleurService {
                         controleur.getNom().toLowerCase().contains(searchTermLower) ||
                                 controleur.getPrenom().toLowerCase().contains(searchTermLower))
                 .map(controleurMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Object> getControleurEpaves(Long controllerId) {
+        // Verify controleur exists
+        Controleur controleur = controleurRepository.findById(controllerId)
+                .orElseThrow(() -> ApiException.notFound("Controleur", controllerId));
+
+        // Return epaves associated with this controleur
+        // This is a simplified implementation; you'd typically map to DTOs
+        return controleur.getEpaves().stream()
+                .map(epave -> (Object) epave)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Object> getControleurCartes(Long controllerId) {
+        Controleur controleur = controleurRepository.findById(controllerId)
+                .orElseThrow(() -> ApiException.notFound("Controleur", controllerId));
+
+        return controleur.getCartePerimees().stream()
+                .map(carte -> (Object) carte)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Object> getControleurFiches(Long controllerId) {
+        Controleur controleur = controleurRepository.findById(controllerId)
+                .orElseThrow(() -> ApiException.notFound("Controleur", controllerId));
+
+        return controleur.getFicheInfractions().stream()
+                .map(fiche -> (Object) fiche)
                 .collect(Collectors.toList());
     }
 }

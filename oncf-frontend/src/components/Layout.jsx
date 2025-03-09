@@ -11,6 +11,7 @@ function Layout() {
             <li><Link to="/epaves">Epaves</Link></li>
             <li><Link to="/fiches-infraction">Fiches d'infraction</Link></li>
             <li><Link to="/cartes-perimee">Cartes périmées</Link></li>
+            <li><Link to="/controleurs">Contrôleurs</Link></li>
             <li><Link to="/employees">Employés</Link></li>
           </ul>
         </nav>

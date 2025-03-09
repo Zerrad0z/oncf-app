@@ -1,14 +1,12 @@
 // src/pages/epaves/EpavesList.jsx
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { epaveService } from '../../services/api';
+import DataTable from '../../components/DataTable';
 
 function EpavesList() {
   const [epaves, setEpaves] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedGare, setSelectedGare] = useState('');
   
   useEffect(() => {
     const fetchEpaves = async () => {
@@ -28,90 +26,112 @@ function EpavesList() {
     fetchEpaves();
   }, []);
   
-  // Filter epaves based on search term and selected gare
-  const filteredEpaves = epaves.filter(epave => {
-    const matchesSearch = searchTerm === '' || 
-      Object.values(epave).some(value => 
-        String(value).toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      
-    const matchesGare = selectedGare === '' || 
-      epave.gareDepot === selectedGare;
-      
-    return matchesSearch && matchesGare;
-  });
+  // Define columns for the DataTable
+  const columns = [
+    {
+      id: 'date',
+      label: 'Date',
+      sortable: true,
+      render: (item) => formatDate(item.date)
+    },
+    {
+      id: 'gareDepot',
+      label: 'Gare/Dépôt',
+      sortable: true
+    },
+    {
+      id: 'train',
+      label: 'Train',
+      sortable: true
+    },
+    {
+      id: 'bm379',
+      label: 'BM379',
+      sortable: true
+    },
+    {
+      id: 'contenu',
+      label: 'Contenu',
+      sortable: false,
+      render: (item) => (
+        <div className="content-preview">
+          {item.contenu.length > 100 
+            ? `${item.contenu.substring(0, 100)}...` 
+            : item.contenu}
+        </div>
+      )
+    },
+    {
+      id: 'controllerName',
+      label: 'Contrôleur',
+      sortable: true,
+      render: (item) => item.controllerName || 'Non assigné'
+    }
+  ];
   
-  // Get unique gare values for the filter dropdown
-  const gares = [...new Set(epaves.map(epave => epave.gareDepot))];
+  // Define filters for the DataTable
+  const filters = [
+    {
+      id: 'dateRange',
+      label: 'Date',
+      type: 'date',
+      filterFn: (item, value) => {
+        if (!value) return true;
+        return new Date(item.date) >= new Date(value);
+      }
+    },
+    {
+      id: 'gareDepot',
+      label: 'Gare/Dépôt',
+      type: 'select',
+      options: getUniqueOptions(epaves, 'gareDepot'),
+      placeholderOption: 'Toutes les gares',
+      filterFn: (item, value) => item.gareDepot === value
+    },
+    {
+      id: 'train',
+      label: 'Train',
+      type: 'select',
+      options: getUniqueOptions(epaves, 'train'),
+      placeholderOption: 'Tous les trains',
+      filterFn: (item, value) => item.train === value
+    }
+  ];
   
-  if (loading) {
-    return <div className="loading">Chargement...</div>;
-  }
+  // Helper function to format dates
+  const formatDate = (dateString) => {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR');
+  };
   
-  if (error) {
-    return <div className="error-message">{error}</div>;
+  // Helper function to get unique options for filters
+  function getUniqueOptions(data, field) {
+    const unique = [...new Set(data.map(item => item[field]))];
+    return unique
+      .filter(Boolean)
+      .sort()
+      .map(value => ({ value, label: value }));
   }
   
   return (
-    <div className="epaves-list-page">
-      <div className="page-header">
-        <h1>Epaves</h1>
-        <Link to="/epaves/new" className="add-button">Ajouter une épave</Link>
-      </div>
-      
-      <div className="filter-section">
-        <input 
-          type="text" 
-          placeholder="Rechercher..." 
-          className="search-input"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <select 
-          className="filter-select"
-          value={selectedGare}
-          onChange={(e) => setSelectedGare(e.target.value)}
-        >
-          <option value="">Toutes les gares</option>
-          {gares.map((gare, index) => (
-            <option key={index} value={gare}>{gare}</option>
-          ))}
-        </select>
-      </div>
-      
-      {filteredEpaves.length === 0 ? (
-        <div className="no-results">Aucun résultat trouvé</div>
-      ) : (
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Gare/Dépôt</th>
-              <th>Train</th>
-              <th>BM379</th>
-              <th>Contenu</th>
-              <th>Contrôleur</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredEpaves.map(epave => (
-              <tr key={epave.id}>
-                <td>{epave.date}</td>
-                <td>{epave.gareDepot}</td>
-                <td>{epave.train}</td>
-                <td>{epave.bm379}</td>
-                <td>{epave.contenu}</td>
-                <td>{epave.controllerName}</td>
-                <td>
-                  <Link to={`/epaves/${epave.id}/edit`} className="edit-button">Modifier</Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+    <DataTable
+      data={epaves}
+      columns={columns}
+      filters={filters}
+      loading={loading}
+      error={error}
+      title="Epaves"
+      addButtonText="Ajouter une épave"
+      addButtonPath="/epaves/new"
+      noDataMessage="Aucune épave trouvée"
+      actions={{
+        edit: true,
+        view: false,
+        delete: false,
+        basePath: '/epaves'
+      }}
+    />
   );
 }
 

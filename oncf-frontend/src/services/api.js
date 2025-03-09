@@ -91,8 +91,16 @@ export const cartePerimeeService = {
 export const controleurService = {
   getAll: () => api.get('/controleurs'),
   getById: (id) => api.get(`/controleurs/${id}`),
+  create: (data) => api.post('/controleurs', data),
+  update: (id, data) => api.put(`/controleurs/${id}`, data),
+  delete: (id) => api.delete(`/controleurs/${id}`),
   getByAntenne: (antenneId) => api.get(`/controleurs/antenne/${antenneId}`),
-  search: (query, antenneId) => api.get(`/controleurs/search?query=${query || ''}&antenneId=${antenneId}`)
+  search: (query, antenneId) => api.get(`/controleurs/search?query=${query || ''}&antenneId=${antenneId}`),
+  
+  // Methods to get related items
+  getEpaves: (controllerId) => api.get(`/controleurs/${controllerId}/epaves`),
+  getCartePerimees: (controllerId) => api.get(`/controleurs/${controllerId}/cartes`),
+  getFicheInfractions: (controllerId) => api.get(`/controleurs/${controllerId}/fiches`)
 };
 
 export default api;

@@ -1,14 +1,12 @@
 // src/pages/fiches/FichesList.jsx
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { ficheInfractionService } from '../../services/api';
+import DataTable from '../../components/DataTable';
 
 function FichesList() {
   const [fiches, setFiches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedGareD, setSelectedGareD] = useState('');
   
   useEffect(() => {
     const fetchFiches = async () => {
@@ -20,11 +18,21 @@ function FichesList() {
       } catch (err) {
         console.error('Error fetching fiches d\'infraction:', err);
         setError('Erreur lors du chargement des données. Veuillez réessayer.');
-        // Fallback to mock data if needed
+        
+        // For development/demo purposes only - remove in production
         setFiches([
-          { id: 1, date: '2025-03-01', gareD: 'Agdal', gareA: 'Casablanca Voyageurs', train: 'TGV 301', numVoy: 152, montant: 100.50, motif: 'Voyage sans titre valide', observation: 'Le voyageur a reçu un avertissement', controllerName: 'Benani Mohamed' },
-          { id: 2, date: '2025-03-02', gareD: 'Rabat Ville', gareA: 'Kénitra', train: 'IC 208', numVoy: 213, montant: 75.00, motif: 'Billet non composté', observation: 'Première infraction', controllerName: 'Tazi Samir' },
-          { id: 3, date: '2025-03-03', gareD: 'Casablanca Voyageurs', gareA: 'Marrakech', train: 'TNR 107', numVoy: 315, montant: 200.75, motif: 'Voyage en première classe avec un billet de seconde', observation: 'Refus de payer la différence', controllerName: 'Alaoui Yasmine' }
+          {
+            id: 1,
+            date: '2025-03-09',
+            train: 'TNR 394',
+            gareD: 'Kenitra',
+            gareA: 'Rabat Ville',
+            gareDepot: 'Kenitra',
+            numVoy: 10,
+            montant: 200000.00,
+            motif: 'okkw',
+            controllerName: 'Ouazzani Samira'
+          }
         ]);
       } finally {
         setLoading(false);
@@ -34,92 +42,157 @@ function FichesList() {
     fetchFiches();
   }, []);
   
-  // Filter fiches based on search term and selected gare
-  const filteredFiches = fiches.filter(fiche => {
-    const matchesSearch = searchTerm === '' || 
-      Object.values(fiche).some(value => 
-        String(value).toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      
-    const matchesGareD = selectedGareD === '' || 
-      fiche.gareD === selectedGareD;
-      
-    return matchesSearch && matchesGareD;
-  });
+  // Define columns for the DataTable
+  const columns = [
+    {
+      id: 'date',
+      label: 'Date',
+      sortable: true,
+      render: (item) => formatDate(item.date)
+    },
+    {
+      id: 'train',
+      label: 'Train',
+      sortable: true
+    },
+    {
+      id: 'gareD',
+      label: 'Départ',
+      sortable: true
+    },
+    {
+      id: 'gareA',
+      label: 'Arrivée',
+      sortable: true
+    },
+    {
+      id: 'gareDepot',
+      label: 'Gare/Dépôt',
+      sortable: true
+    },
+    {
+      id: 'numVoy',
+      label: 'N° Voyageur',
+      sortable: true
+    },
+    {
+      id: 'montant',
+      label: 'Montant (Dh)',
+      sortable: true,
+      render: (item) => formatMontant(item.montant)
+    },
+    {
+      id: 'motif',
+      label: 'Motif',
+      sortable: true
+    },
+    {
+      id: 'controllerName',
+      label: 'Contrôleur',
+      sortable: true,
+      render: (item) => item.controllerName || 'Non assigné'
+    }
+  ];
   
-  // Get unique gare depart values for the filter dropdown
-  const garesD = [...new Set(fiches.map(fiche => fiche.gareD))];
+  // Define filters for the DataTable
+  const filters = [
+    {
+      id: 'dateRange',
+      label: 'Date',
+      type: 'date',
+      filterFn: (item, value) => {
+        if (!value) return true;
+        return new Date(item.date) >= new Date(value);
+      }
+    },
+    {
+      id: 'gareDepot',
+      label: 'Gare/Dépôt',
+      type: 'select',
+      options: getUniqueOptions(fiches, 'gareDepot'),
+      placeholderOption: 'Toutes les gares',
+      filterFn: (item, value) => item.gareDepot === value
+    },
+    {
+      id: 'train',
+      label: 'Train',
+      type: 'select',
+      options: getUniqueOptions(fiches, 'train'),
+      placeholderOption: 'Tous les trains',
+      filterFn: (item, value) => item.train === value
+    },
+    {
+      id: 'montantMin',
+      label: 'Montant minimum',
+      type: 'select',
+      options: [
+        { value: '50', label: '50 Dh et plus' },
+        { value: '100', label: '100 Dh et plus' },
+        { value: '200', label: '200 Dh et plus' },
+        { value: '500', label: '500 Dh et plus' }
+      ],
+      placeholderOption: 'Tous les montants',
+      filterFn: (item, value) => item.montant >= parseFloat(value)
+    }
+  ];
   
-  if (loading) {
-    return <div className="loading">Chargement...</div>;
+  // Helper function to format dates
+  const formatDate = (dateString) => {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR');
+  };
+  
+  // Helper function to format montant
+  const formatMontant = (montant) => {
+    if (montant === undefined || montant === null) return '-';
+    return montant.toLocaleString('fr-FR', { 
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+  
+  // Helper function to get unique options for filters
+  function getUniqueOptions(data, field) {
+    const unique = [...new Set(data.map(item => item[field]))];
+    return unique
+      .filter(Boolean)
+      .sort()
+      .map(value => ({ value, label: value }));
   }
   
+  // Handle delete function if needed
+  const handleDelete = async (item) => {
+    if (window.confirm(`Êtes-vous sûr de vouloir supprimer cette fiche d'infraction ?`)) {
+      try {
+        await ficheInfractionService.delete(item.id);
+        setFiches(fiches.filter(fiche => fiche.id !== item.id));
+      } catch (err) {
+        console.error('Error deleting fiche:', err);
+        alert('Erreur lors de la suppression de la fiche d\'infraction.');
+      }
+    }
+  };
+  
   return (
-    <div className="fiches-list-page">
-      <div className="page-header">
-        <h1>Fiches d'infraction</h1>
-        <Link to="/fiches-infraction/new" className="add-button">Ajouter une fiche d'infraction</Link>
-      </div>
-      
-      {error && <div className="error-message">{error}</div>}
-      
-      <div className="filter-section">
-        <input 
-          type="text" 
-          placeholder="Rechercher..." 
-          className="search-input"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <select 
-          className="filter-select"
-          value={selectedGareD}
-          onChange={(e) => setSelectedGareD(e.target.value)}
-        >
-          <option value="">Toutes les gares de départ</option>
-          {garesD.map((gare, index) => (
-            <option key={index} value={gare}>{gare}</option>
-          ))}
-        </select>
-      </div>
-      
-      {filteredFiches.length === 0 ? (
-        <div className="no-results">Aucun résultat trouvé</div>
-      ) : (
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Gare Départ</th>
-              <th>Gare Arrivée</th>
-              <th>Train</th>
-              <th>N° Voyageur</th>
-              <th>Montant</th>
-              <th>Motif</th>
-              <th>Contrôleur</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredFiches.map(fiche => (
-              <tr key={fiche.id}>
-                <td>{fiche.date}</td>
-                <td>{fiche.gareD}</td>
-                <td>{fiche.gareA}</td>
-                <td>{fiche.train}</td>
-                <td>{fiche.numVoy}</td>
-                <td>{fiche.montant.toFixed(2)} Dh</td>
-                <td>{fiche.motif}</td>
-                <td>{fiche.controllerName}</td>
-                <td>
-                  <Link to={`/fiches-infraction/${fiche.id}/edit`} className="edit-button">Modifier</Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+    <DataTable
+      data={fiches}
+      columns={columns}
+      filters={filters}
+      loading={loading}
+      error={error}
+      title="Fiches d'infraction"
+      addButtonText="Ajouter une fiche d'infraction"
+      addButtonPath="/fiches-infraction/new"
+      noDataMessage="Aucune fiche d'infraction trouvée"
+      actions={{
+        edit: true,
+        view: false,
+        delete: true,
+        basePath: '/fiches-infraction',
+        onDelete: handleDelete
+      }}
+    />
   );
 }
 

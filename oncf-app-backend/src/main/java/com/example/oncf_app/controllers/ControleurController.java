@@ -3,6 +3,7 @@ package com.example.oncf_app.controllers;
 import com.example.oncf_app.dtos.ControleurDTO;
 import com.example.oncf_app.services.ControleurService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,22 @@ public class ControleurController {
         return ResponseEntity.ok(controleurService.getControleurById(id));
     }
 
+    @PostMapping
+    public ResponseEntity<ControleurDTO> createControleur(@RequestBody ControleurDTO controleurDTO) {
+        return new ResponseEntity<>(controleurService.saveControleur(controleurDTO), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ControleurDTO> updateControleur(@PathVariable Long id, @RequestBody ControleurDTO controleurDTO) {
+        return ResponseEntity.ok(controleurService.updateControleur(id, controleurDTO));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteControleur(@PathVariable Long id) {
+        controleurService.deleteControleur(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/antenne/{antenneId}")
     public ResponseEntity<List<ControleurDTO>> getControleursByAntenne(@PathVariable Long antenneId) {
         return ResponseEntity.ok(controleurService.getControleursByAntenne(antenneId));
@@ -35,5 +52,21 @@ public class ControleurController {
             @RequestParam(required = false) String query,
             @RequestParam Long antenneId) {
         return ResponseEntity.ok(controleurService.searchControleursByName(query, antenneId));
+    }
+
+    // Additional endpoints for related items
+    @GetMapping("/{id}/epaves")
+    public ResponseEntity<List<Object>> getControleurEpaves(@PathVariable Long id) {
+        return ResponseEntity.ok(controleurService.getControleurEpaves(id));
+    }
+
+    @GetMapping("/{id}/cartes")
+    public ResponseEntity<List<Object>> getControleurCartes(@PathVariable Long id) {
+        return ResponseEntity.ok(controleurService.getControleurCartes(id));
+    }
+
+    @GetMapping("/{id}/fiches")
+    public ResponseEntity<List<Object>> getControleurFiches(@PathVariable Long id) {
+        return ResponseEntity.ok(controleurService.getControleurFiches(id));
     }
 }
