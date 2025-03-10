@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import Layout from './components/Layout';
+import Layout from './layouts/Layout';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
@@ -63,15 +63,16 @@ function App() {
               <Route path=":id/edit" element={<CarteForm />} />
             </Route>
             
+            {/* Controleurs routes - MOVED INSIDE the Layout */}
+            <Route path="controleurs">
+              <Route index element={<ControleursList />} />
+              <Route path=":id/details" element={<ControleurDetails />} />
+              <Route path=":id/edit" element={<ControleurForm />} />
+              <Route path="new" element={<ControleurForm />} />
+            </Route>
+            
             {/* Catch-all route for protected area */}
             <Route path="*" element={<NotFound />} />
-          </Route>
-
-          <Route path="controleurs">
-             <Route index element={<ControleursList />} />
-             <Route path=":id/details" element={<ControleurDetails />} />
-             <Route path=":id/edit" element={<ControleurForm />} />
-             <Route path="new" element={<ControleurForm />} />
           </Route>
           
           {/* Catch-all route for the entire app */}

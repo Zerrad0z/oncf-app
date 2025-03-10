@@ -1,7 +1,7 @@
 // src/components/ControleurSelect.jsx
 import { useState, useEffect } from 'react';
-import { controleurService } from '../services/api';
-import { useAuth } from '../hooks/useAuth';
+import { controleurService } from '../../services/api';
+import { useAuth } from '../../hooks/useAuth';
 
 function ControleurSelect({ value, onChange, id = 'controllerId', name = 'controllerId', required = false }) {
   const [controleurs, setControleurs] = useState([]);

@@ -133,25 +133,40 @@ function CartesList() {
       .map(value => ({ value, label: value }));
   }
   
-  return (
-    <DataTable
-      data={cartes}
-      columns={columns}
-      filters={filters}
-      loading={loading}
-      error={error}
-      title="Cartes Périmées"
-      addButtonText="Ajouter une carte périmée"
-      addButtonPath="/cartes-perimee/new"
-      noDataMessage="Aucune carte périmée trouvée"
-      actions={{
-        edit: true,
-        view: false,
-        delete: false,
-        basePath: '/cartes-perimee'
-      }}
-    />
-  );
+  // Add this handleDelete function before the return statement
+const handleDelete = async (item) => {
+  if (window.confirm(`Êtes-vous sûr de vouloir supprimer cette carte périmée ?`)) {
+    try {
+      await cartePerimeeService.delete(item.id);
+      setCartes(cartes.filter(carte => carte.id !== item.id));
+    } catch (err) {
+      console.error('Error deleting carte périmée:', err);
+      alert('Erreur lors de la suppression de la carte périmée.');
+    }
+  }
+};
+
+// Then update your DataTable actions to include delete
+return (
+  <DataTable
+    data={cartes}
+    columns={columns}
+    filters={filters}
+    loading={loading}
+    error={error}
+    title="Cartes Périmées"
+    addButtonText="Ajouter une carte périmée"
+    addButtonPath="/cartes-perimee/new"
+    noDataMessage="Aucune carte périmée trouvée"
+    actions={{
+      edit: true,
+      view: false,
+      delete: true, // Enable delete
+      onDelete: handleDelete, // Add the delete handler
+      basePath: '/cartes-perimee'
+    }}
+  />
+);
 }
 
 export default CartesList;

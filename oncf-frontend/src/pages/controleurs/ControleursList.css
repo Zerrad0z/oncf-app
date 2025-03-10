@@ -1,54 +1,80 @@
 /* src/pages/controleurs/ControleursList.css */
-.controleurs-list-page {
-    padding: 20px;
-  }
-  
+.controleur-stats {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.stat-item, .total-stats {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 40px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  font-size: 0.85rem;
+}
+
+.stat-item {
+  position: relative;
+}
+
+.total-stats {
+  background-color: #e8f4fd;
+  font-weight: 500;
+}
+
+/* Fix icon sizes explicitly */
+.stat-icon {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0;
+}
+
+/* Override any global icon styles */
+.controleur-stats svg,
+.controleur-stats .svg-inline--fa {
+  width: 16px !important;
+  height: 16px !important;
+  font-size: 16px !important;
+}
+
+.stat-icon.epaves {
+  color: #ff9800;
+}
+
+.stat-icon.cartes {
+  color: #9c27b0;
+}
+
+.stat-icon.fiches {
+  color: #4caf50;
+}
+
+.stat-icon.total {
+  color: #2196f3;
+}
+
+/* Add styles for the count */
+.stat-item span, .total-stats span {
+  font-weight: 600;
+  min-width: 15px;
+  text-align: center;
+}
+
+/* Force consistent spacing */
+tbody td {
+  vertical-align: middle !important;
+}
+
+/* Responsive fixes */
+@media (max-width: 768px) {
   .controleur-stats {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
   }
-  
-  .stat-item, .total-stats {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
-    border-radius: 4px;
-    background-color: #f5f5f5;
-    font-size: 0.875rem;
-  }
-  
-  .total-stats {
-    background-color: #e8f4fd;
-    font-weight: 500;
-  }
-  
-  .stat-icon {
-    font-size: 14px;
-  }
-  
-  .stat-icon.epaves {
-    color: #ff9800;
-  }
-  
-  .stat-icon.cartes {
-    color: #9c27b0;
-  }
-  
-  .stat-icon.fiches {
-    color: #4caf50;
-  }
-  
-  .stat-icon.total {
-    color: #2196f3;
-  }
-  
-  /* Add some responsive adjustments */
-  @media (max-width: 768px) {
-    .controleur-stats {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 6px;
-    }
-  }
+}

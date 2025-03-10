@@ -1,5 +1,5 @@
 // src/api/employeeService.ts
-import axios from './axios';
+import axios from 'axios';
 import { Employee } from '../types';
 
 export const getEmployees = () => {

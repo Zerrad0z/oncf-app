@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { cartePerimeeService } from '../../services/api';
 import { useAuth } from '../../hooks/useAuth';
-import ControleurSelect from '../../components/ControleurSelect';
-import '../../components/ControleurSelect.css';
+import ControleurSelect from '../controleurs/ControleurSelect';
+import '../controleurs/ControleurSelect.css';
 import '../../styles/FormStyles.css';
 import { FaArrowLeft, FaSave, FaCalendarAlt, FaTrain, FaMapMarkerAlt, FaCreditCard, FaInfo } from 'react-icons/fa';
 

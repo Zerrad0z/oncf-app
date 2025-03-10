@@ -56,28 +56,6 @@ function ControleursList() {
       } catch (err) {
         console.error('Error fetching controleurs:', err);
         setError('Erreur lors du chargement des contrôleurs.');
-        
-        // For development purposes only - remove in production
-        const mockControleurs = [
-          { id: 12345, nom: "Benjelloun", prenom: "Karim", antenneName: "Rabat Ville" },
-          { id: 23456, nom: "Ouazzani", prenom: "Samira", antenneName: "Rabat Ville" },
-          { id: 34567, nom: "Tahiri", prenom: "Ahmed", antenneName: "Rabat Ville" },
-          { id: 45678, nom: "Mansouri", prenom: "Fatima", antenneName: "Casablanca Voyageurs" },
-          { id: 56789, nom: "Berrada", prenom: "Youssef", antenneName: "Casablanca Voyageurs" }
-        ];
-        setControleurs(mockControleurs);
-        
-        // Mock statistics
-        const mockStats = {};
-        mockControleurs.forEach(c => {
-          mockStats[c.id] = {
-            epavesCount: Math.floor(Math.random() * 10),
-            cartesCount: Math.floor(Math.random() * 15),
-            fichesCount: Math.floor(Math.random() * 20),
-            get totalItems() { return this.epavesCount + this.cartesCount + this.fichesCount; }
-          };
-        });
-        setControleurStats(mockStats);
       } finally {
         setLoading(false);
       }

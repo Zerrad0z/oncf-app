@@ -3,10 +3,19 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { epaveService } from '../../services/api';
 import { useAuth } from '../../hooks/useAuth';
-import ControleurSelect from '../../components/ControleurSelect';
-import '../../components/ControleurSelect.css';
+import ControleurSelect from '../controleurs/ControleurSelect';
+import '../controleurs/ControleurSelect.css';
 import '../../styles/FormStyles.css';
-import { FaArrowLeft, FaSave, FaCalendarAlt, FaTrain, FaMapMarkerAlt, FaBox, FaInfo } from 'react-icons/fa';
+import { 
+  FaArrowLeft, 
+  FaSave, 
+  FaCalendarAlt, 
+  FaTrain, 
+  FaMapMarkerAlt, 
+  FaBox, 
+  FaInfo,
+  FaFileAlt
+} from 'react-icons/fa';
 
 function EpaveForm() {
   const { id } = useParams();
@@ -148,7 +157,12 @@ function EpaveForm() {
   };
   
   if (loading) {
-    return <div className="loading">Chargement...</div>;
+    return (
+      <div className="form-loading">
+        <div className="spinner"></div>
+        <p>Chargement des données...</p>
+      </div>
+    );
   }
   
   return (
@@ -160,7 +174,7 @@ function EpaveForm() {
         </Link>
       </div>
       
-      <div className="form-content">
+      <div className="form-content form-compact">
         {error && <div className="error-message">{error}</div>}
         
         <form onSubmit={handleSubmit}>
@@ -171,41 +185,48 @@ function EpaveForm() {
             <div className="form-section-content">
               <div className="form-group">
                 <label htmlFor="date">Date de découverte <span className="required">*</span></label>
-                <input
-                  type="date"
-                  id="date"
-                  name="date"
-                  value={formData.date}
-                  onChange={handleChange}
-                  required
-                  className="form-control"
-                />
+                <div className="input-with-icon">
+                  <FaCalendarAlt className="input-icon" />
+                  <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleChange}
+                    required
+                    className="form-control"
+                  />
+                </div>
               </div>
               
               <div className="form-group">
                 <label>Jours depuis la découverte</label>
-                <div className="form-control" style={{ backgroundColor: '#f8f9fa' }}>
+                <div className="form-control" style={{ backgroundColor: '#f5f9ff' }}>
                   {discoveryDays !== null ? (
-                    <span>{discoveryDays === 0 ? 'Aujourd\'hui' : `${discoveryDays} jour${discoveryDays > 1 ? 's' : ''}`}</span>
+                    <span className={`status-badge ${discoveryDays > 30 ? 'warning' : 'info'}`}>
+                      {discoveryDays === 0 ? 'Aujourd\'hui' : `${discoveryDays} jour${discoveryDays > 1 ? 's' : ''}`}
+                    </span>
                   ) : (
                     'Calculé automatiquement'
                   )}
                 </div>
-                <div className="form-hint">Ce champ est calculé automatiquement à partir de la date de découverte</div>
               </div>
               
               <div className="form-group">
                 <label htmlFor="bm379">BM379 <span className="required">*</span></label>
-                <input
-                  type="text"
-                  id="bm379"
-                  name="bm379"
-                  value={formData.bm379}
-                  onChange={handleChange}
-                  required
-                  placeholder="Numéro BM379"
-                  className={`form-control ${!validation.bm379.valid ? 'is-invalid' : ''}`}
-                />
+                <div className="input-with-icon">
+                  <FaFileAlt className="input-icon" />
+                  <input
+                    type="text"
+                    id="bm379"
+                    name="bm379"
+                    value={formData.bm379}
+                    onChange={handleChange}
+                    required
+                    placeholder="Numéro BM379"
+                    className={`form-control ${!validation.bm379.valid ? 'is-invalid' : ''}`}
+                  />
+                </div>
                 {!validation.bm379.valid && (
                   <div className="validation-error">{validation.bm379.message}</div>
                 )}
@@ -220,16 +241,19 @@ function EpaveForm() {
             <div className="form-section-content">
               <div className="form-group">
                 <label htmlFor="gareDepot">Gare/Dépôt <span className="required">*</span></label>
-                <input
-                  type="text"
-                  id="gareDepot"
-                  name="gareDepot"
-                  value={formData.gareDepot}
-                  onChange={handleChange}
-                  required
-                  placeholder="Entrez le nom de la gare ou du dépôt"
-                  className={`form-control ${!validation.gareDepot.valid ? 'is-invalid' : ''}`}
-                />
+                <div className="input-with-icon">
+                  <FaMapMarkerAlt className="input-icon" />
+                  <input
+                    type="text"
+                    id="gareDepot"
+                    name="gareDepot"
+                    value={formData.gareDepot}
+                    onChange={handleChange}
+                    required
+                    placeholder="Entrez le nom de la gare ou du dépôt"
+                    className={`form-control ${!validation.gareDepot.valid ? 'is-invalid' : ''}`}
+                  />
+                </div>
                 {!validation.gareDepot.valid && (
                   <div className="validation-error">{validation.gareDepot.message}</div>
                 )}
@@ -237,16 +261,19 @@ function EpaveForm() {
               
               <div className="form-group">
                 <label htmlFor="train">Train <span className="required">*</span></label>
-                <input
-                  type="text"
-                  id="train"
-                  name="train"
-                  value={formData.train}
-                  onChange={handleChange}
-                  required
-                  placeholder="Numéro du train (ex: TGV 301)"
-                  className={`form-control ${!validation.train.valid ? 'is-invalid' : ''}`}
-                />
+                <div className="input-with-icon">
+                  <FaTrain className="input-icon" />
+                  <input
+                    type="text"
+                    id="train"
+                    name="train"
+                    value={formData.train}
+                    onChange={handleChange}
+                    required
+                    placeholder="Numéro du train (ex: TGV 301)"
+                    className={`form-control ${!validation.train.valid ? 'is-invalid' : ''}`}
+                  />
+                </div>
                 {!validation.train.valid && (
                   <div className="validation-error">{validation.train.message}</div>
                 )}
@@ -303,7 +330,7 @@ function EpaveForm() {
           
           <div className="form-actions">
             <Link to="/epaves" className="btn btn-outline-secondary">
-              Annuler
+              <FaArrowLeft /> Annuler
             </Link>
             <button type="submit" className="btn btn-primary" disabled={submitLoading}>
               <FaSave />

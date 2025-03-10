@@ -1,10 +1,28 @@
 // src/components/DataTable.jsx
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './DataTable.css';
 // Import icons from react-icons
-import { FaEdit, FaTrashAlt, FaEye, FaPlus, FaSearch, FaCalendarAlt } from 'react-icons/fa';
-import { FaSortUp, FaSortDown } from 'react-icons/fa';
+import { 
+  FaEdit, 
+  FaTrashAlt, 
+  FaEye, 
+  FaPlus, 
+  FaSearch, 
+  FaCalendarAlt,
+  FaSortUp, 
+  FaSortDown,
+  FaFilter,
+  FaChevronLeft,
+  FaChevronRight,
+  FaChevronDown,
+  FaTimes,
+  FaEllipsisV,
+  FaInfoCircle
+} from 'react-icons/fa';
+
+// Import FilterBar component
+import FilterBar from './FilterBar';
 
 function DataTable({
   data = [],
@@ -16,7 +34,10 @@ function DataTable({
   addButtonText = 'Ajouter',
   addButtonPath = '',
   noDataMessage = 'Aucun résultat trouvé',
-  title = 'Données'
+  title = 'Données',
+  // Add new props for advanced filtering
+  advancedFiltering = false,
+  advancedFilterOptions = []
 }) {
   // State for filters and search
   const [activeFilters, setActiveFilters] = useState({});
@@ -31,6 +52,27 @@ function DataTable({
   // State for pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  
+  // State for advanced filter panel
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [advancedFilterValues, setAdvancedFilterValues] = useState({});
+  
+  // State for responsive design
+  const [showFilters, setShowFilters] = useState(false);
+  
+  // Effect to apply advanced filters to active filters
+  useEffect(() => {
+    if (Object.keys(advancedFilterValues).length > 0) {
+      // Merge advanced filters with active filters
+      setActiveFilters(prev => ({
+        ...prev,
+        ...advancedFilterValues
+      }));
+      
+      // Reset to first page when filters change
+      setCurrentPage(1);
+    }
+  }, [advancedFilterValues]);
   
   // Handle filter changes
   const handleFilterChange = (filterId, value) => {
@@ -47,6 +89,16 @@ function DataTable({
     setCurrentPage(1); // Reset to first page when search changes
   };
   
+  // Clear search field
+  const clearSearch = () => {
+    setSearchTerm('');
+  };
+  
+  // Handle advanced filter application
+  const handleApplyAdvancedFilters = (filters) => {
+    setAdvancedFilterValues(filters);
+  };
+  
   // Handle sort request
   const requestSort = (key) => {
     let direction = 'asc';
@@ -54,6 +106,14 @@ function DataTable({
       direction = 'desc';
     }
     setSortConfig({ key, direction });
+  };
+  
+  // Clear all filters
+  const clearAllFilters = () => {
+    setActiveFilters({});
+    setSearchTerm('');
+    setAdvancedFilterValues({});
+    setCurrentPage(1);
   };
   
   // Apply filters, search, and sorting to data
@@ -109,25 +169,108 @@ function DataTable({
   // Calculate total pages
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
   
+  // Calculate visible page numbers
+  const getVisiblePageNumbers = () => {
+    const delta = 1; // How many pages to show before and after current page
+    const pages = [];
+    
+    for (
+      let i = Math.max(1, currentPage - delta);
+      i <= Math.min(totalPages, currentPage + delta);
+      i++
+    ) {
+      pages.push(i);
+    }
+    
+    // Add first page if not already included
+    if (pages[0] > 1) {
+      if (pages[0] > 2) {
+        pages.unshift('...');
+      }
+      pages.unshift(1);
+    }
+    
+    // Add last page if not already included
+    if (pages[pages.length - 1] < totalPages) {
+      if (pages[pages.length - 1] < totalPages - 1) {
+        pages.push('...');
+      }
+      pages.push(totalPages);
+    }
+    
+    return pages;
+  };
+  
+  // Check if any filters are active
+  const hasActiveFilters = searchTerm !== '' || Object.values(activeFilters).some(value => value !== '');
+  
+  // Loading state
   if (loading) {
-    return <div className="loading">Chargement...</div>;
+    return (
+      <div className="datatable-loading">
+        <div className="spinner"></div>
+        <p>Chargement des données...</p>
+      </div>
+    );
   }
   
   return (
-    <div className="data-table-container">
-      <div className="table-header">
-        <h1>{title}</h1>
-        {addButtonPath && (
-          <Link to={addButtonPath} className="add-button">
-            <FaPlus className="button-icon" />
-            <span className="button-text">{addButtonText}</span>
-          </Link>
-        )}
+    <div className="datatable-container">
+      <div className="datatable-header">
+        <div className="header-title">
+          <h1>{title}</h1>
+          <div className="active-filters-count">
+            {hasActiveFilters && (
+              <div className="filters-badge">
+                {Object.values(activeFilters).filter(Boolean).length + (searchTerm ? 1 : 0)}
+              </div>
+            )}
+          </div>
+        </div>
+        
+        <div className="header-actions">
+          {advancedFiltering && (
+            <button 
+              className={`filter-toggle-button ${showAdvancedFilters ? 'active' : ''}`}
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+            >
+              <FaFilter />
+              <span>Filtres avancés</span>
+            </button>
+          )}
+          
+          <button 
+            className={`filter-toggle-button ${showFilters ? 'active' : ''}`}
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <FaFilter />
+            <span className="filter-button-text">Filtres</span>
+          </button>
+          
+          {addButtonPath && (
+            <Link to={addButtonPath} className="add-button">
+              <FaPlus />
+              <span className="add-button-text">{addButtonText}</span>
+            </Link>
+          )}
+        </div>
       </div>
       
-      {error && <div className="error-message">{error}</div>}
+      {error && (
+        <div className="datatable-alert error">
+          <FaInfoCircle className="alert-icon" />
+          <p>{error}</p>
+        </div>
+      )}
       
-      <div className="filters-row">
+      {advancedFiltering && showAdvancedFilters && (
+        <FilterBar 
+          onApplyFilters={handleApplyAdvancedFilters} 
+          filterOptions={advancedFilterOptions}
+        />
+      )}
+      
+      <div className={`datatable-controls ${showFilters ? 'show' : ''}`}>
         <div className="search-field">
           <div className="search-input-wrapper">
             <FaSearch className="search-icon" />
@@ -138,52 +281,76 @@ function DataTable({
               onChange={handleSearchChange}
               className="search-input"
             />
+            {searchTerm && (
+              <button 
+                className="clear-search-button" 
+                onClick={clearSearch}
+                aria-label="Effacer la recherche"
+              >
+                <FaTimes />
+              </button>
+            )}
           </div>
         </div>
         
-        {filters.map(filter => (
-          <div key={filter.id} className="filter-field">
-            <label htmlFor={`filter-${filter.id}`}>{filter.label}:</label>
+        {filters.length > 0 && (
+          <div className="filters-container">
+            {filters.map(filter => (
+              <div key={filter.id} className={`filter-field ${activeFilters[filter.id] ? 'filter-active' : ''}`}>
+                <label htmlFor={`filter-${filter.id}`}>{filter.label}</label>
+                
+                {filter.type === 'select' ? (
+                  <div className="select-wrapper">
+                    <select
+                      id={`filter-${filter.id}`}
+                      value={activeFilters[filter.id] || ''}
+                      onChange={(e) => handleFilterChange(filter.id, e.target.value)}
+                      className="filter-select"
+                    >
+                      <option value="">{filter.placeholderOption || 'Tous'}</option>
+                      {filter.options.map(option => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <FaChevronDown className="select-arrow" />
+                  </div>
+                ) : filter.type === 'date' ? (
+                  <div className="date-input-wrapper">
+                    <input
+                      type="date"
+                      id={`filter-${filter.id}`}
+                      value={activeFilters[filter.id] || ''}
+                      onChange={(e) => handleFilterChange(filter.id, e.target.value)}
+                      className="filter-date"
+                    />
+                    <FaCalendarAlt className="calendar-icon" />
+                  </div>
+                ) : null}
+              </div>
+            ))}
             
-            {filter.type === 'select' ? (
-              <div className="select-wrapper">
-                <select
-                  id={`filter-${filter.id}`}
-                  value={activeFilters[filter.id] || ''}
-                  onChange={(e) => handleFilterChange(filter.id, e.target.value)}
-                  className="filter-select"
-                >
-                  <option value="">{filter.placeholderOption || 'Tous'}</option>
-                  {filter.options.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ) : filter.type === 'date' ? (
-              <div className="date-input-wrapper">
-                <input
-                  type="date"
-                  id={`filter-${filter.id}`}
-                  value={activeFilters[filter.id] || ''}
-                  onChange={(e) => handleFilterChange(filter.id, e.target.value)}
-                  className="filter-date"
-                  placeholder="mm/dd/yyyy"
-                />
-                <FaCalendarAlt className="calendar-icon" />
-              </div>
-            ) : null}
+            {hasActiveFilters && (
+              <button 
+                className="clear-filters-button"
+                onClick={clearAllFilters}
+                title="Effacer tous les filtres"
+              >
+                <FaTimes />
+                <span>Effacer les filtres</span>
+              </button>
+            )}
           </div>
-        ))}
+        )}
       </div>
       
-      <div className="table-info">
+      <div className="table-stats">
         <div className="results-count">
-          {filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''}
+          <span>{filteredData.length} résultat{filteredData.length !== 1 ? 's' : ''}</span>
         </div>
         <div className="items-per-page">
-          <span>Afficher:</span>
+          <span>Afficher</span>
           <select
             value={itemsPerPage}
             onChange={(e) => {
@@ -202,9 +369,22 @@ function DataTable({
       </div>
       
       {paginatedData.length === 0 ? (
-        <div className="no-results">{noDataMessage}</div>
+        <div className="no-results">
+          <div className="no-results-icon">
+            <FaSearch />
+          </div>
+          <p>{noDataMessage}</p>
+          {hasActiveFilters && (
+            <button 
+              className="clear-filters-button secondary"
+              onClick={clearAllFilters}
+            >
+              Effacer les filtres
+            </button>
+          )}
+        </div>
       ) : (
-        <div className="table-container">
+        <div className="table-wrapper">
           <table className="data-table">
             <thead>
               <tr>
@@ -212,60 +392,73 @@ function DataTable({
                   <th 
                     key={column.id}
                     onClick={() => column.sortable !== false ? requestSort(column.id) : null}
-                    className={column.sortable !== false ? 'sortable-header' : ''}
+                    className={`${column.sortable !== false ? 'sortable-header' : ''} ${sortConfig.key === column.id ? 'sorted' : ''}`}
                   >
-                    {column.label}
-                    {sortConfig.key === column.id && (
-                      <span className="sort-indicator">
-                        {sortConfig.direction === 'asc' ? 
-                          <FaSortUp className="sort-icon" /> : 
-                          <FaSortDown className="sort-icon" />}
-                      </span>
-                    )}
+                    <div className="th-content">
+                      <span>{column.label}</span>
+                      {column.sortable !== false && (
+                        <span className="sort-indicator">
+                          {sortConfig.key === column.id ? (
+                            sortConfig.direction === 'asc' ? 
+                              <FaSortUp className="sort-icon" /> : 
+                              <FaSortDown className="sort-icon" />
+                          ) : (
+                            <div className="sort-inactive"></div>
+                          )}
+                        </span>
+                      )}
+                    </div>
                   </th>
                 ))}
                 {(actions.edit || actions.view || actions.delete) && (
-                  <th className="actions-header">Actions</th>
+                  <th className="actions-header">
+                    <span>Actions</span>
+                  </th>
                 )}
               </tr>
             </thead>
             <tbody>
               {paginatedData.map((item, index) => (
-                <tr key={item.id || index}>
+                <tr key={item.id || index} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
                   {columns.map(column => (
-                    <td key={column.id}>
+                    <td key={column.id} className={column.id === 'contenu' ? 'content-cell' : ''}>
                       {column.render ? column.render(item) : item[column.id]}
                     </td>
                   ))}
                   {(actions.edit || actions.view || actions.delete) && (
                     <td className="actions-cell">
-                      {actions.view && (
-                        <Link 
-                          to={actions.viewPath ? actions.viewPath(item) : `${actions.basePath || ''}/${item.id}`}
-                          className="view-button action-button"
-                          title="Voir les détails"
-                        >
-                          <FaEye className="action-icon" />
-                        </Link>
-                      )}
-                      {actions.edit && (
-                        <Link 
-                          to={actions.editPath ? actions.editPath(item) : `${actions.basePath || ''}/${item.id}/edit`}
-                          className="edit-button action-button"
-                          title="Modifier"
-                        >
-                          <FaEdit className="action-icon" />
-                        </Link>
-                      )}
-                      {actions.delete && (
-                        <button
-                          onClick={() => actions.onDelete && actions.onDelete(item)}
-                          className="delete-button action-button"
-                          title="Supprimer"
-                        >
-                          <FaTrashAlt className="action-icon" />
-                        </button>
-                      )}
+                      <div className="actions-container">
+                        {actions.view && (
+                          <Link
+                            to={actions.viewPath ? actions.viewPath(item) : `${actions.basePath || ''}/${item.id}`}
+                            className="action-button view-button"
+                            title="Voir les détails"
+                            aria-label="Voir les détails"
+                          >
+                            <FaEye size={12} className="action-icon" />
+                          </Link>
+                        )}
+                        {actions.edit && (
+                          <Link
+                            to={actions.editPath ? actions.editPath(item) : `${actions.basePath || ''}/${item.id}/edit`}
+                            className="action-button edit-button"
+                            title="Modifier"
+                            aria-label="Modifier"
+                          >
+                            <FaEdit size={12} className="action-icon" />
+                          </Link>
+                        )}
+                        {actions.delete && (
+                          <button
+                            onClick={() => actions.onDelete && actions.onDelete(item)}
+                            className="action-button delete-button"
+                            title="Supprimer"
+                            aria-label="Supprimer"
+                          >
+                            <FaTrashAlt size={16} className="action-icon" />
+                          </button>
+                        )}
+                      </div>
                     </td>
                   )}
                 </tr>
@@ -281,35 +474,55 @@ function DataTable({
             <button 
               onClick={() => setCurrentPage(1)}
               disabled={currentPage === 1}
-              className="pagination-button"
+              className="pagination-button first-page"
+              aria-label="Première page"
             >
-              &laquo;
+              <FaChevronLeft />
+              <FaChevronLeft className="second-chevron" />
             </button>
+            
             <button 
               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="pagination-button"
+              className="pagination-button prev-page"
+              aria-label="Page précédente"
             >
-              &lsaquo;
+              <FaChevronLeft />
             </button>
             
-            <span className="page-status">
-              {currentPage} / {totalPages}
-            </span>
+            <div className="pagination-numbers">
+              {getVisiblePageNumbers().map((page, index) => (
+                typeof page === 'number' ? (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentPage(page)}
+                    className={`pagination-number ${currentPage === page ? 'active' : ''}`}
+                  >
+                    {page}
+                  </button>
+                ) : (
+                  <span key={index} className="pagination-ellipsis">{page}</span>
+                )
+              ))}
+            </div>
             
             <button 
               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="pagination-button"
+              className="pagination-button next-page"
+              aria-label="Page suivante"
             >
-              &rsaquo;
+              <FaChevronRight />
             </button>
+            
             <button 
               onClick={() => setCurrentPage(totalPages)}
               disabled={currentPage === totalPages}
-              className="pagination-button"
+              className="pagination-button last-page"
+              aria-label="Dernière page"
             >
-              &raquo;
+              <FaChevronRight />
+              <FaChevronRight className="second-chevron" />
             </button>
           </div>
         </div>

@@ -113,6 +113,17 @@ function EpavesList() {
       .sort()
       .map(value => ({ value, label: value }));
   }
+  const handleDelete = async (item) => {
+    if (window.confirm(`Êtes-vous sûr de vouloir supprimer cette épave ?`)) {
+      try {
+        await epaveService.delete(item.id);
+        setEpaves(epaves.filter(epave => epave.id !== item.id));
+      } catch (err) {
+        console.error('Error deleting epave:', err);
+        alert('Erreur lors de la suppression de l\'épave.');
+      }
+    }
+  };
   
   return (
     <DataTable
@@ -128,7 +139,8 @@ function EpavesList() {
       actions={{
         edit: true,
         view: false,
-        delete: false,
+        delete: true, // Enable delete
+        onDelete: handleDelete, // Add the delete handler
         basePath: '/epaves'
       }}
     />

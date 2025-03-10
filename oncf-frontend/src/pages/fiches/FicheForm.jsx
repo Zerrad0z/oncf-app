@@ -3,10 +3,21 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ficheInfractionService } from '../../services/api';
 import { useAuth } from '../../hooks/useAuth';
-import ControleurSelect from '../../components/ControleurSelect';
-import '../../components/ControleurSelect.css';
+import ControleurSelect from '../controleurs/ControleurSelect';
+import SuccessModal from '../../components/SuccessModal';
+import '../controleurs/ControleurSelect.css';
 import '../../styles/FormStyles.css';
-import { FaArrowLeft, FaSave, FaCalendarAlt, FaTrain, FaMapMarkerAlt, FaFileAlt, FaMoneyBillWave, FaInfo } from 'react-icons/fa';
+import { 
+  FaArrowLeft, 
+  FaSave, 
+  FaCalendarAlt, 
+  FaTrain, 
+  FaMapMarkerAlt, 
+  FaFileAlt, 
+  FaMoneyBillWave, 
+  FaInfo,
+  FaUser
+} from 'react-icons/fa';
 
 function FicheForm() {
   const { id } = useParams();
@@ -14,6 +25,10 @@ function FicheForm() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(id ? true : false);
   const [error, setError] = useState(null);
+  
+  // State for success modal
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0], // Today's date
@@ -177,20 +192,35 @@ function FicheForm() {
       
       if (id) {
         await ficheInfractionService.update(id, submissionData);
+        setSuccessMessage('La fiche d\'infraction a été mise à jour avec succès!');
       } else {
         await ficheInfractionService.create(submissionData);
+        setSuccessMessage('La fiche d\'infraction a été créée avec succès!');
       }
-      navigate('/fiches-infraction');
+      
+      // Show success modal instead of redirecting immediately
+      setShowSuccessModal(true);
+      
     } catch (err) {
       console.error('Error saving fiche:', err);
       setError('Erreur lors de l\'enregistrement. Veuillez réessayer.');
-    } finally {
       setSubmitLoading(false);
     }
   };
   
+  // Handle modal close and redirect
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
+    navigate('/fiches-infraction');
+  };
+  
   if (loading) {
-    return <div className="loading">Chargement...</div>;
+    return (
+      <div className="form-loading">
+        <div className="spinner"></div>
+        <p>Chargement des données...</p>
+      </div>
+    );
   }
   
   return (
@@ -202,7 +232,7 @@ function FicheForm() {
         </Link>
       </div>
       
-      <div className="form-content">
+      <div className="form-content form-compact">
         {error && <div className="error-message">{error}</div>}
         
         <form onSubmit={handleSubmit}>
@@ -213,41 +243,48 @@ function FicheForm() {
             <div className="form-section-content">
               <div className="form-group">
                 <label htmlFor="date">Date <span className="required">*</span></label>
-                <input
-                  type="date"
-                  id="date"
-                  name="date"
-                  value={formData.date}
-                  onChange={handleChange}
-                  required
-                  className="form-control"
-                />
+                <div className="input-with-icon">
+                  <FaCalendarAlt className="input-icon" />
+                  <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleChange}
+                    required
+                    className="form-control"
+                  />
+                </div>
               </div>
               
               <div className="form-group">
                 <label>Jours écoulés</label>
-                <div className="form-control" style={{ backgroundColor: '#f8f9fa' }}>
+                <div className="form-control" style={{ backgroundColor: '#f5f9ff' }}>
                   {elapsedDays !== null ? (
-                    <span>{elapsedDays === 0 ? 'Aujourd\'hui' : `${elapsedDays} jour${elapsedDays > 1 ? 's' : ''}`}</span>
+                    <span className={`status-badge ${elapsedDays > 30 ? 'warning' : 'info'}`}>
+                      {elapsedDays === 0 ? 'Aujourd\'hui' : `${elapsedDays} jour${elapsedDays > 1 ? 's' : ''}`}
+                    </span>
                   ) : (
                     'Calculé automatiquement'
                   )}
                 </div>
-                <div className="form-hint">Ce champ est calculé automatiquement à partir de la date d'infraction</div>
               </div>
               
               <div className="form-group">
                 <label htmlFor="numVoy">Numéro voyageur <span className="required">*</span></label>
-                <input
-                  type="number"
-                  id="numVoy"
-                  name="numVoy"
-                  value={formData.numVoy}
-                  onChange={handleChange}
-                  required
-                  placeholder="Numéro du voyageur"
-                  className={`form-control ${!validation.numVoy.valid ? 'is-invalid' : ''}`}
-                />
+                <div className="input-with-icon">
+                  <FaUser className="input-icon" />
+                  <input
+                    type="number"
+                    id="numVoy"
+                    name="numVoy"
+                    value={formData.numVoy}
+                    onChange={handleChange}
+                    required
+                    placeholder="Numéro du voyageur"
+                    className={`form-control ${!validation.numVoy.valid ? 'is-invalid' : ''}`}
+                  />
+                </div>
                 {!validation.numVoy.valid && (
                   <div className="validation-error">{validation.numVoy.message}</div>
                 )}
@@ -262,16 +299,19 @@ function FicheForm() {
             <div className="form-section-content">
               <div className="form-group">
                 <label htmlFor="gareD">Gare de départ <span className="required">*</span></label>
-                <input
-                  type="text"
-                  id="gareD"
-                  name="gareD"
-                  value={formData.gareD}
-                  onChange={handleChange}
-                  required
-                  placeholder="Gare de départ"
-                  className={`form-control ${!validation.gareD.valid ? 'is-invalid' : ''}`}
-                />
+                <div className="input-with-icon">
+                  <FaMapMarkerAlt className="input-icon" />
+                  <input
+                    type="text"
+                    id="gareD"
+                    name="gareD"
+                    value={formData.gareD}
+                    onChange={handleChange}
+                    required
+                    placeholder="Gare de départ"
+                    className={`form-control ${!validation.gareD.valid ? 'is-invalid' : ''}`}
+                  />
+                </div>
                 {!validation.gareD.valid && (
                   <div className="validation-error">{validation.gareD.message}</div>
                 )}
@@ -279,16 +319,19 @@ function FicheForm() {
               
               <div className="form-group">
                 <label htmlFor="gareA">Gare d'arrivée <span className="required">*</span></label>
-                <input
-                  type="text"
-                  id="gareA"
-                  name="gareA"
-                  value={formData.gareA}
-                  onChange={handleChange}
-                  required
-                  placeholder="Gare d'arrivée"
-                  className={`form-control ${!validation.gareA.valid ? 'is-invalid' : ''}`}
-                />
+                <div className="input-with-icon">
+                  <FaMapMarkerAlt className="input-icon" />
+                  <input
+                    type="text"
+                    id="gareA"
+                    name="gareA"
+                    value={formData.gareA}
+                    onChange={handleChange}
+                    required
+                    placeholder="Gare d'arrivée"
+                    className={`form-control ${!validation.gareA.valid ? 'is-invalid' : ''}`}
+                  />
+                </div>
                 {!validation.gareA.valid && (
                   <div className="validation-error">{validation.gareA.message}</div>
                 )}
@@ -296,16 +339,19 @@ function FicheForm() {
               
               <div className="form-group">
                 <label htmlFor="gareDepot">Gare/Dépôt <span className="required">*</span></label>
-                <input
-                  type="text"
-                  id="gareDepot"
-                  name="gareDepot"
-                  value={formData.gareDepot}
-                  onChange={handleChange}
-                  required
-                  placeholder="Gare/Dépôt"
-                  className={`form-control ${!validation.gareDepot.valid ? 'is-invalid' : ''}`}
-                />
+                <div className="input-with-icon">
+                  <FaMapMarkerAlt className="input-icon" />
+                  <input
+                    type="text"
+                    id="gareDepot"
+                    name="gareDepot"
+                    value={formData.gareDepot}
+                    onChange={handleChange}
+                    required
+                    placeholder="Gare/Dépôt"
+                    className={`form-control ${!validation.gareDepot.valid ? 'is-invalid' : ''}`}
+                  />
+                </div>
                 {!validation.gareDepot.valid && (
                   <div className="validation-error">{validation.gareDepot.message}</div>
                 )}
@@ -313,16 +359,19 @@ function FicheForm() {
               
               <div className="form-group">
                 <label htmlFor="train">Train <span className="required">*</span></label>
-                <input
-                  type="text"
-                  id="train"
-                  name="train"
-                  value={formData.train}
-                  onChange={handleChange}
-                  required
-                  placeholder="Numéro du train"
-                  className={`form-control ${!validation.train.valid ? 'is-invalid' : ''}`}
-                />
+                <div className="input-with-icon">
+                  <FaTrain className="input-icon" />
+                  <input
+                    type="text"
+                    id="train"
+                    name="train"
+                    value={formData.train}
+                    onChange={handleChange}
+                    required
+                    placeholder="Numéro du train"
+                    className={`form-control ${!validation.train.valid ? 'is-invalid' : ''}`}
+                  />
+                </div>
                 {!validation.train.valid && (
                   <div className="validation-error">{validation.train.message}</div>
                 )}
@@ -337,17 +386,20 @@ function FicheForm() {
             <div className="form-section-content">
               <div className="form-group">
                 <label htmlFor="montant">Montant (Dh) <span className="required">*</span></label>
-                <input
-                  type="number"
-                  step="0.01"
-                  id="montant"
-                  name="montant"
-                  value={formData.montant}
-                  onChange={handleChange}
-                  required
-                  placeholder="Montant de l'infraction"
-                  className={`form-control ${!validation.montant.valid ? 'is-invalid' : ''}`}
-                />
+                <div className="input-with-icon">
+                  <FaMoneyBillWave className="input-icon" />
+                  <input
+                    type="number"
+                    step="0.01"
+                    id="montant"
+                    name="montant"
+                    value={formData.montant}
+                    onChange={handleChange}
+                    required
+                    placeholder="Montant de l'infraction"
+                    className={`form-control ${!validation.montant.valid ? 'is-invalid' : ''}`}
+                  />
+                </div>
                 {!validation.montant.valid && (
                   <div className="validation-error">{validation.montant.message}</div>
                 )}
@@ -355,28 +407,32 @@ function FicheForm() {
               
               <div className="form-group">
                 <label>Taxe applicable</label>
-                <div className="form-control" style={{ backgroundColor: '#f8f9fa' }}>
+                <div className="form-control" style={{ backgroundColor: '#f5f9ff' }}>
                   {taxPercentage !== null ? (
-                    <span>{taxPercentage}% (soit {taxAmount} Dh)</span>
+                    <span className="status-badge info">
+                      {taxPercentage}% (soit {taxAmount} Dh)
+                    </span>
                   ) : (
                     'Calculé automatiquement'
                   )}
                 </div>
-                <div className="form-hint">Ce champ est calculé automatiquement en fonction du montant</div>
               </div>
               
               <div className="form-group">
                 <label htmlFor="motif">Motif <span className="required">*</span></label>
-                <input
-                  type="text"
-                  id="motif"
-                  name="motif"
-                  value={formData.motif}
-                  onChange={handleChange}
-                  required
-                  placeholder="Motif de l'infraction"
-                  className={`form-control ${!validation.motif.valid ? 'is-invalid' : ''}`}
-                />
+                <div className="input-with-icon">
+                  <FaFileAlt className="input-icon" />
+                  <input
+                    type="text"
+                    id="motif"
+                    name="motif"
+                    value={formData.motif}
+                    onChange={handleChange}
+                    required
+                    placeholder="Motif de l'infraction"
+                    className={`form-control ${!validation.motif.valid ? 'is-invalid' : ''}`}
+                  />
+                </div>
                 {!validation.motif.valid && (
                   <div className="validation-error">{validation.motif.message}</div>
                 )}
@@ -421,7 +477,7 @@ function FicheForm() {
           
           <div className="form-actions">
             <Link to="/fiches-infraction" className="btn btn-outline-secondary">
-              Annuler
+              <FaArrowLeft /> Annuler
             </Link>
             <button type="submit" className="btn btn-primary" disabled={submitLoading}>
               <FaSave />
@@ -430,6 +486,15 @@ function FicheForm() {
           </div>
         </form>
       </div>
+      
+      {/* Success Modal */}
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={handleSuccessModalClose}
+        message={successMessage}
+        title={id ? "Modification réussie" : "Création réussie"}
+        autoCloseTime={3000}
+      />
     </div>
   );
 }
