@@ -1,6 +1,5 @@
 package com.example.oncf_app.controllers;
 
-
 import com.example.oncf_app.dtos.CartePerimeeDTO;
 import com.example.oncf_app.services.CartePerimeeService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import java.util.List;
 public class CartePerimeeController {
 
     private final CartePerimeeService cartePerimeeService;
-
 
     @GetMapping
     public ResponseEntity<List<CartePerimeeDTO>> getAllCartePerimees() {
@@ -87,12 +85,12 @@ public class CartePerimeeController {
     }
 
     @GetMapping("/controller/{controllerId}")
-    public ResponseEntity<List<CartePerimeeDTO>> getCartePerimeesByController(@PathVariable Long controllerId) {
+    public ResponseEntity<List<CartePerimeeDTO>> getCartePerimeesByController(@PathVariable String controllerId) {
         return ResponseEntity.ok(cartePerimeeService.getCartePerimeesByController(controllerId));
     }
 
     @GetMapping("/agent-com/{agentComId}")
-    public ResponseEntity<List<CartePerimeeDTO>> getCartePerimeesByAgentCom(@PathVariable Long agentComId) {
+    public ResponseEntity<List<CartePerimeeDTO>> getCartePerimeesByAgentCom(@PathVariable String agentComId) {
         return ResponseEntity.ok(cartePerimeeService.getCartePerimeesByAgentCom(agentComId));
     }
 

@@ -105,7 +105,7 @@ public class EpaveServiceImpl implements EpaveService {
     }
 
     @Override
-    public List<EpaveDTO> getEpavesByAgentCom(Long agentComId) {
+    public List<EpaveDTO> getEpavesByAgentCom(String agentComId) {
         return epaveRepository.findByAgentComId(agentComId).stream()
                 .map(epaveMapper::toDto)
                 .collect(Collectors.toList());
@@ -126,7 +126,7 @@ public class EpaveServiceImpl implements EpaveService {
     }
 
     @Override
-    public List<EpaveDTO> getEpavesByControleur(Long controleurId) {
+    public List<EpaveDTO> getEpavesByControleur(String controleurId) {
         return epaveRepository.findByControleurId(controleurId).stream()
                 .map(epaveMapper::toDto)
                 .collect(Collectors.toList());

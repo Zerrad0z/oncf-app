@@ -8,14 +8,14 @@ export interface Antenne {
 }
 
 export interface Employee {
-  id: number;
+  id: string;
   nom: string;
   prenom: string;
   role: Role;
-  antenneId: number;
+  antenne: Antenne;  
+  antenneId?: number;  
   antenneName?: string;
 }
-
 export interface Epave {
   id: number;
   date: string;
@@ -23,9 +23,9 @@ export interface Epave {
   train: string;
   bm379: string;
   contenu: string;
-  controllerId: number;
+  controllerId: string; 
   controllerName?: string;
-  agentComId: number;
+  agentComId: string; 
 }
 
 export interface FicheInfraction {
@@ -39,9 +39,9 @@ export interface FicheInfraction {
   montant: number;
   motif: string;
   observation: string;
-  controllerId: number;
+  controllerId: string; 
   controllerName?: string;
-  agentComId: number;
+  agentComId: string; 
 }
 
 export interface CartePerimee {
@@ -55,13 +55,13 @@ export interface CartePerimee {
   dateDv: string;
   dateFv: string;
   suiteReservee: string;
-  controllerId: number;
+  controllerId: string; 
   controllerName?: string;
-  agentComId: number;
+  agentComId: string; 
 }
 
 export interface AuthUser {
-  id: number;
+  id: string; 
   username: string;
   role: Role;
   token: string;

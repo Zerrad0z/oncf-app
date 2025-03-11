@@ -16,7 +16,7 @@ public class EpaveDTO {
     private String train;
     private String bm379;
     private String contenu;
-    private Long controllerId;
+    private String controllerId;
     private String controllerName; // For display purposes
-    private Long agentComId;
+    private String agentComId;
 }

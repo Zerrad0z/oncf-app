@@ -20,7 +20,7 @@ public class FicheInfractionDTO {
     private Double montant;
     private String motif;
     private String observation;
-    private Long controllerId;
-    private String controllerName; // For display purposes
-    private Long agentComId;
+    private String controllerId;
+    private String controllerName;
+    private String agentComId;
 }

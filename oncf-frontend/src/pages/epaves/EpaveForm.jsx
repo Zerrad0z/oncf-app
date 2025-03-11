@@ -4,6 +4,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { epaveService } from '../../services/api';
 import { useAuth } from '../../hooks/useAuth';
 import ControleurSelect from '../controleurs/ControleurSelect';
+import SuccessModal from '../../components/SuccessModal';
 import '../controleurs/ControleurSelect.css';
 import '../../styles/FormStyles.css';
 import { 
@@ -23,6 +24,10 @@ function EpaveForm() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(id ? true : false);
   const [error, setError] = useState(null);
+  
+  // State for success modal
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0], // Today's date
@@ -144,16 +149,26 @@ function EpaveForm() {
       
       if (id) {
         await epaveService.update(id, submissionData);
+        setSuccessMessage('L\'épave a été mise à jour avec succès!');
       } else {
         await epaveService.create(submissionData);
+        setSuccessMessage('L\'épave a été ajoutée avec succès!');
       }
-      navigate('/epaves');
+      
+      // Show success modal instead of redirecting immediately
+      setShowSuccessModal(true);
+      
     } catch (err) {
       console.error('Error saving epave:', err);
       setError('Erreur lors de l\'enregistrement. Veuillez réessayer.');
-    } finally {
       setSubmitLoading(false);
     }
+  };
+  
+  // Handle modal close and redirect
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
+    navigate('/epaves');
   };
   
   if (loading) {
@@ -196,19 +211,6 @@ function EpaveForm() {
                     required
                     className="form-control"
                   />
-                </div>
-              </div>
-              
-              <div className="form-group">
-                <label>Jours depuis la découverte</label>
-                <div className="form-control" style={{ backgroundColor: '#f5f9ff' }}>
-                  {discoveryDays !== null ? (
-                    <span className={`status-badge ${discoveryDays > 30 ? 'warning' : 'info'}`}>
-                      {discoveryDays === 0 ? 'Aujourd\'hui' : `${discoveryDays} jour${discoveryDays > 1 ? 's' : ''}`}
-                    </span>
-                  ) : (
-                    'Calculé automatiquement'
-                  )}
                 </div>
               </div>
               
@@ -339,6 +341,15 @@ function EpaveForm() {
           </div>
         </form>
       </div>
+      
+      {/* Success Modal */}
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={handleSuccessModalClose}
+        message={successMessage}
+        title={id ? "Modification réussie" : "Création réussie"}
+        autoCloseTime={3000}
+      />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import com.example.oncf_app.entities.Antenne;
 import com.example.oncf_app.services.AntenneService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,9 @@ public class AntenneController {
 
     @GetMapping
     public ResponseEntity<List<Antenne>> getAllAntennes() {
-        return ResponseEntity.ok(antenneService.getAllAntennes());
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(antenneService.getAllAntennes());
     }
 
     @GetMapping("/{id}")

@@ -26,8 +26,8 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Handle 401 unauthorized errors
-    if (error.response && error.response.status === 401) {
+    // Handle both 401 unauthorized and 403 forbidden errors (expired token)
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
       // Clear local storage
       localStorage.removeItem('user');
       localStorage.removeItem('token');

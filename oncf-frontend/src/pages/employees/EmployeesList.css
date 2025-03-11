@@ -1,0 +1,73 @@
+/* src/pages/employees/EmployeesList.css */
+.employees-list-page {
+    padding: 20px;
+  }
+  
+  .employee-stats {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .stat-item {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    gap: 4px;
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  .total-stats {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    gap: 4px;
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .stat-icon {
+    font-size: 12px;
+  }
+  
+  .stat-icon.epaves {
+    color: #8e44ad;
+  }
+  
+  .stat-icon.cartes {
+    color: #3498db;
+  }
+  
+  .stat-icon.fiches {
+    color: #e74c3c;
+  }
+  
+  .stat-icon.total {
+    color: #2c3e50;
+  }
+  
+  .employee-role {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .role-icon {
+    font-size: 14px;
+  }
+  
+  .role-agent_com {
+    color: #3498db;
+  }
+  
+  .role-chef_sect {
+    color: #f39c12;
+  }
+  
+  .role-chef_ante {
+    color: #16a085;
+  }

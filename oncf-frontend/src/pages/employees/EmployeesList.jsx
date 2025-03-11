@@ -1,14 +1,14 @@
-// src/pages/controleurs/ControleursList.jsx
+// src/pages/employees/EmployeesList.jsx
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { controleurService, epaveService, cartePerimeeService, ficheInfractionService } from '../../services/api';
+import { employeeService, epaveService, cartePerimeeService, ficheInfractionService } from '../../services/api';
 import DataTable from '../../components/DataTable';
-import './ControleursList.css';
-import { FaChartBar, FaFileAlt, FaCreditCard, FaBoxOpen } from 'react-icons/fa';
+import './EmployeesList.css';
+import { FaChartBar, FaFileAlt, FaCreditCard, FaBoxOpen, FaUserShield } from 'react-icons/fa';
 
-function ControleursList() {
-  const [controleurs, setControleurs] = useState([]);
-  const [controleurStats, setControleurStats] = useState({});
+function EmployeesList() {
+  const [employees, setEmployees] = useState([]);
+  const [employeeStats, setEmployeeStats] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
@@ -16,33 +16,33 @@ function ControleursList() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Fetch controleurs
-        const response = await controleurService.getAll();
-        const controleursData = response.data;
-        setControleurs(controleursData);
+        // Fetch employees
+        const response = await employeeService.getAll();
+        const employeesData = response.data;
+        setEmployees(employeesData);
         
-        // Fetch statistics for each controleur
+        // Fetch statistics for each employee
         const statsMap = {};
         
         // This would be better done with a single API call in a real application
         // but for now we'll simulate with separate calls
-        for (const controleur of controleursData) {
+        for (const employee of employeesData) {
           try {
             const [epaves, cartes, fiches] = await Promise.all([
-              epaveService.getByController(controleur.id),
-              cartePerimeeService.getByController(controleur.id),
-              ficheInfractionService.getByController(controleur.id)
+              epaveService.getByAgentCom(employee.id),
+              cartePerimeeService.getByAgentCom(employee.id),
+              ficheInfractionService.getByAgentCom(employee.id)
             ]);
             
-            statsMap[controleur.id] = {
+            statsMap[employee.id] = {
               epavesCount: epaves.data.length,
               cartesCount: cartes.data.length,
               fichesCount: fiches.data.length,
               totalItems: epaves.data.length + cartes.data.length + fiches.data.length
             };
           } catch (statError) {
-            console.error(`Error fetching stats for controleur ${controleur.id}:`, statError);
-            statsMap[controleur.id] = {
+            console.error(`Error fetching stats for employee ${employee.id}:`, statError);
+            statsMap[employee.id] = {
               epavesCount: 0,
               cartesCount: 0,
               fichesCount: 0,
@@ -51,11 +51,11 @@ function ControleursList() {
           }
         }
         
-        setControleurStats(statsMap);
+        setEmployeeStats(statsMap);
         setError(null);
       } catch (err) {
-        console.error('Error fetching controleurs:', err);
-        setError('Erreur lors du chargement des contrôleurs.');
+        console.error('Error fetching employees:', err);
+        setError('Erreur lors du chargement des employés.');
       } finally {
         setLoading(false);
       }
@@ -63,6 +63,16 @@ function ControleursList() {
     
     fetchData();
   }, []);
+  
+  // Function to get role display text
+  const getRoleDisplay = (role) => {
+    switch (role) {
+      case 'AGENT_COM': return 'Agent Commercial';
+      case 'CHEF_SECT': return 'Chef de Section';
+      case 'CHEF_ANTE': return 'Chef d\'Antenne';
+      default: return role;
+    }
+  };
   
   // Define columns for the DataTable
   const columns = [
@@ -78,6 +88,17 @@ function ControleursList() {
       render: (item) => `${item.nom} ${item.prenom}`
     },
     {
+      id: 'role',
+      label: 'Rôle',
+      sortable: true,
+      render: (item) => (
+        <div className="employee-role">
+          <FaUserShield className={`role-icon role-${item.role?.toLowerCase()}`} />
+          <span>{getRoleDisplay(item.role)}</span>
+        </div>
+      )
+    },
+    {
       id: 'antenneName',
       label: 'Antenne',
       sortable: true
@@ -87,9 +108,9 @@ function ControleursList() {
       label: 'Statistiques',
       sortable: false,
       render: (item) => {
-        const stats = controleurStats[item.id] || { epavesCount: 0, cartesCount: 0, fichesCount: 0, totalItems: 0 };
+        const stats = employeeStats[item.id] || { epavesCount: 0, cartesCount: 0, fichesCount: 0, totalItems: 0 };
         return (
-          <div className="controleur-stats">
+          <div className="employee-stats">
             <div className="stat-item" title="Épaves">
               <FaBoxOpen className="stat-icon epaves" />
               <span>{stats.epavesCount}</span>
@@ -115,10 +136,22 @@ function ControleursList() {
   // Define filters for the DataTable
   const filters = [
     {
+      id: 'role',
+      label: 'Rôle',
+      type: 'select',
+      options: [
+        { value: 'AGENT_COM', label: 'Agent Commercial' },
+        { value: 'CHEF_SECT', label: 'Chef de Section' },
+        { value: 'CHEF_ANTE', label: 'Chef d\'Antenne' }
+      ],
+      placeholderOption: 'Tous les rôles',
+      filterFn: (item, value) => item.role === value
+    },
+    {
       id: 'antenne',
       label: 'Antenne',
       type: 'select',
-      options: getUniqueOptions(controleurs, 'antenneName'),
+      options: getUniqueOptions(employees, 'antenneName'),
       placeholderOption: 'Toutes les antennes',
       filterFn: (item, value) => item.antenneName === value
     },
@@ -134,27 +167,27 @@ function ControleursList() {
   }
   
   return (
-    <div className="controleurs-list-page">
+    <div className="employees-list-page">
       <DataTable
-        data={controleurs}
+        data={employees}
         columns={columns}
         filters={filters}
         loading={loading}
         error={error}
-        title="Contrôleurs"
-        addButtonText="Ajouter un contrôleur"
-        addButtonPath="/controleurs/new"
-        noDataMessage="Aucun contrôleur trouvé"
+        title="Utilisateurs"
+        addButtonText="Ajouter un Utilisateur"
+        addButtonPath="/employees/new"
+        noDataMessage="Aucun Utilisateur trouvé"
         actions={{
           edit: true,
           view: true,
           delete: false,
-          basePath: '/controleurs',
-          viewPath: (item) => `/controleurs/${item.id}/details`
+          basePath: '/employees',
+          viewPath: (item) => `/employees/${item.id}/details`
         }}
       />
     </div>
   );
 }
 
-export default ControleursList;
+export default EmployeesList;

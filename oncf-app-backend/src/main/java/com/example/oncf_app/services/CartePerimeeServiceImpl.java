@@ -1,6 +1,5 @@
 package com.example.oncf_app.services;
 
-
 import com.example.oncf_app.dtos.CartePerimeeDTO;
 import com.example.oncf_app.entities.CartePerimee;
 import com.example.oncf_app.entities.Controleur;
@@ -126,7 +125,7 @@ public class CartePerimeeServiceImpl implements CartePerimeeService {
     }
 
     @Override
-    public List<CartePerimeeDTO> getCartePerimeesByAgentCom(Long agentComId) {
+    public List<CartePerimeeDTO> getCartePerimeesByAgentCom(String agentComId) {
         return cartePerimeeRepository.findByAgentComId(agentComId).stream()
                 .map(cartePerimeeMapper::toDto)
                 .collect(Collectors.toList());
@@ -155,7 +154,7 @@ public class CartePerimeeServiceImpl implements CartePerimeeService {
     }
 
     @Override
-    public List<CartePerimeeDTO> getCartePerimeesByController(Long controllerId) {
+    public List<CartePerimeeDTO> getCartePerimeesByController(String controllerId) {
         return cartePerimeeRepository.findByControleurId(controllerId).stream()
                 .map(cartePerimeeMapper::toDto)
                 .collect(Collectors.toList());

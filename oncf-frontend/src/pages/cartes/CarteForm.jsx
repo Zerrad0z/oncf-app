@@ -4,6 +4,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { cartePerimeeService } from '../../services/api';
 import { useAuth } from '../../hooks/useAuth';
 import ControleurSelect from '../controleurs/ControleurSelect';
+import SuccessModal from '../../components/SuccessModal';
 import '../controleurs/ControleurSelect.css';
 import '../../styles/FormStyles.css';
 import { FaArrowLeft, FaSave, FaCalendarAlt, FaTrain, FaMapMarkerAlt, FaCreditCard, FaInfo } from 'react-icons/fa';
@@ -14,6 +15,10 @@ function CarteForm() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(id ? true : false);
   const [error, setError] = useState(null);
+  
+  // State for success modal
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0], // Today's date
@@ -184,16 +189,26 @@ function CarteForm() {
       
       if (id) {
         await cartePerimeeService.update(id, submissionData);
+        setSuccessMessage('La carte périmée a été mise à jour avec succès!');
       } else {
         await cartePerimeeService.create(submissionData);
+        setSuccessMessage('La carte périmée a été ajoutée avec succès!');
       }
-      navigate('/cartes-perimee');
+      
+      // Show success modal instead of redirecting immediately
+      setShowSuccessModal(true);
+      
     } catch (err) {
       console.error('Error saving carte périmée:', err);
       setError('Erreur lors de l\'enregistrement. Veuillez réessayer.');
-    } finally {
       setSubmitLoading(false);
     }
+  };
+  
+  // Handle modal close and redirect
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
+    navigate('/cartes-perimee');
   };
   
   if (loading) {
@@ -417,7 +432,7 @@ function CarteForm() {
           
           <div className="form-actions">
             <Link to="/cartes-perimee" className="btn btn-outline-secondary">
-              Annuler
+              <FaArrowLeft /> Annuler
             </Link>
             <button type="submit" className="btn btn-primary" disabled={submitLoading}>
               <FaSave />
@@ -426,6 +441,15 @@ function CarteForm() {
           </div>
         </form>
       </div>
+      
+      {/* Success Modal */}
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={handleSuccessModalClose}
+        message={successMessage}
+        title={id ? "Modification réussie" : "Création réussie"}
+        autoCloseTime={3000}
+      />
     </div>
   );
 }

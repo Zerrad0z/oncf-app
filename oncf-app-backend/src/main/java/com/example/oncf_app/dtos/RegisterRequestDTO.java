@@ -8,9 +8,9 @@ import lombok.Setter;
 public class RegisterRequestDTO {
     private String username;
     private String password;
-    private String nom;  // Changed from fullName to nom
-    private String prenom;  // Added prenom
+    private String nom;
+    private String prenom;
     private String role;
-    private Long employeeId;
-    private Long antenneId; // If assigning an antenne
+    private String employeeId;
+    private Long antenneId;
 }

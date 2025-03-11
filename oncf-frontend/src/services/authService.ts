@@ -27,7 +27,8 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
+    // Handle both 401 unauthorized and 403 forbidden errors (expired token)
+    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
       localStorage.removeItem('user');
       localStorage.removeItem('token');
       
@@ -56,13 +57,33 @@ interface RegisterRequest {
 // Auth service methods
 const authService = {
   login: async (credentials: LoginRequest) => {
-    const response = await api.post('/auth/login', credentials);
-    return response.data;
+    try {
+      const response = await api.post('/auth/login', credentials);
+      return response.data;
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
   },
   
   register: async (userData: RegisterRequest) => {
-    const response = await api.post('/auth/register', userData);
-    return response.data;
+    try {
+      const response = await api.post('/auth/register', userData);
+      return response.data;
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    }
+  },
+  
+  logout: () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  },
+  
+  isAuthenticated: () => {
+    return localStorage.getItem('token') !== null;
   }
 };
 

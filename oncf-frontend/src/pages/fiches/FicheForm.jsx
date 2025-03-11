@@ -258,20 +258,7 @@ function FicheForm() {
               </div>
               
               <div className="form-group">
-                <label>Jours écoulés</label>
-                <div className="form-control" style={{ backgroundColor: '#f5f9ff' }}>
-                  {elapsedDays !== null ? (
-                    <span className={`status-badge ${elapsedDays > 30 ? 'warning' : 'info'}`}>
-                      {elapsedDays === 0 ? 'Aujourd\'hui' : `${elapsedDays} jour${elapsedDays > 1 ? 's' : ''}`}
-                    </span>
-                  ) : (
-                    'Calculé automatiquement'
-                  )}
-                </div>
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="numVoy">Numéro voyageur <span className="required">*</span></label>
+                <label htmlFor="numVoy">Nombre de voyageurs <span className="required">*</span></label>
                 <div className="input-with-icon">
                   <FaUser className="input-icon" />
                   <input
@@ -281,7 +268,7 @@ function FicheForm() {
                     value={formData.numVoy}
                     onChange={handleChange}
                     required
-                    placeholder="Numéro du voyageur"
+                    placeholder="Nombre de voyageurs"
                     className={`form-control ${!validation.numVoy.valid ? 'is-invalid' : ''}`}
                   />
                 </div>
@@ -381,10 +368,10 @@ function FicheForm() {
           
           <div className="form-section">
             <div className="form-section-header">
-              <FaMoneyBillWave /> Pénalité
+              <FaInfo /> Informations complémentaires
             </div>
             <div className="form-section-content">
-              <div className="form-group">
+            <div className="form-group">
                 <label htmlFor="montant">Montant (Dh) <span className="required">*</span></label>
                 <div className="input-with-icon">
                   <FaMoneyBillWave className="input-icon" />
@@ -406,19 +393,6 @@ function FicheForm() {
               </div>
               
               <div className="form-group">
-                <label>Taxe applicable</label>
-                <div className="form-control" style={{ backgroundColor: '#f5f9ff' }}>
-                  {taxPercentage !== null ? (
-                    <span className="status-badge info">
-                      {taxPercentage}% (soit {taxAmount} Dh)
-                    </span>
-                  ) : (
-                    'Calculé automatiquement'
-                  )}
-                </div>
-              </div>
-              
-              <div className="form-group">
                 <label htmlFor="motif">Motif <span className="required">*</span></label>
                 <div className="input-with-icon">
                   <FaFileAlt className="input-icon" />
@@ -437,14 +411,6 @@ function FicheForm() {
                   <div className="validation-error">{validation.motif.message}</div>
                 )}
               </div>
-            </div>
-          </div>
-          
-          <div className="form-section">
-            <div className="form-section-header">
-              <FaInfo /> Informations complémentaires
-            </div>
-            <div className="form-section-content">
               <div className="form-group full-width">
                 <label htmlFor="observation">Observation</label>
                 <textarea
@@ -459,7 +425,7 @@ function FicheForm() {
               </div>
               
               <div className="form-group full-width">
-                <label htmlFor="controllerId">Contrôleur <span className="required">*</span></label>
+                <label htmlFor="controllerId">ACT <span className="required">*</span></label>
                 <ControleurSelect
                   id="controllerId"
                   name="controllerId"

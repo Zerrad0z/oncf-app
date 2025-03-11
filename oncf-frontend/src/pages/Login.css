@@ -1,0 +1,163 @@
+/* Login.css */
+
+/* Container styling */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border-top: 4px solid #FFA726; /* Orange accent border */
+}
+
+.login-container h2 {
+  margin-bottom: 25px;
+  color: #FFA726; /* Orange heading */
+  font-weight: 600;
+  font-size: 24px;
+  text-align: center;
+}
+
+.login-container form {
+  width: 100%;
+}
+
+/* Form group styling */
+.form-group {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+}
+
+/* Input styling with explicit height and padding */
+.form-group input {
+  display: block;
+  width: 100%;
+  height: 44px; /* Fixed height to match button */
+  padding: 0 15px; /* Horizontal padding only */
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  background-color: #FFF8E1; /* Cream background */
+  box-sizing: border-box; /* Critical for consistent sizing */
+  line-height: 44px; /* Match the height for vertical centering */
+}
+
+/* For placeholder text vertical alignment */
+.form-group input::placeholder {
+  line-height: normal;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #FFA726; /* Orange border on focus */
+  box-shadow: 0 0 0 2px rgba(255, 167, 38, 0.1); /* Light orange glow */
+}
+
+/* Button styling with explicit height to match inputs */
+button[type="submit"] {
+  display: block;
+  width: 100%;
+  height: 44px; /* Match input height */
+  padding: 0 15px; /* Horizontal padding only */
+  margin-top: 20px;
+  background-color: #FFA726; /* Orange button */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  box-sizing: border-box; /* Critical for consistent sizing */
+  line-height: 44px; /* Match the height for consistent appearance */
+}
+
+button[type="submit"]:hover {
+  background-color: #FF9800; /* Darker orange on hover */
+}
+
+button[type="submit"]:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Error message styling */
+.error-message {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: #ffebee;
+  border-left: 4px solid #f44336;
+  color: #d32f2f;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Company logo styling */
+.company-logo {
+  display: block;
+  max-width: 120px;
+  margin: 0 auto 30px;
+}
+
+/* Forgot password link */
+.forgot-password {
+  text-align: right;
+  margin-top: -10px;
+  margin-bottom: 15px;
+}
+
+.forgot-password a {
+  color: #666;
+  font-size: 13px;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.forgot-password a:hover {
+  color: #FFA726; /* Orange on hover */
+  text-decoration: underline;
+}
+
+/* Divider styling */
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  color: #999;
+  font-size: 12px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #eee;
+}
+
+.divider span {
+  padding: 0 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .login-container {
+    max-width: 90%;
+    margin: 60px auto;
+    padding: 20px;
+  }
+}

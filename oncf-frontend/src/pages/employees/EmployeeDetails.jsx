@@ -1,14 +1,14 @@
-// src/pages/controleurs/ControleurDetails.jsx
+// src/pages/employees/EmployeeDetails.jsx
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
-  controleurService, 
+  employeeService, 
   epaveService, 
   cartePerimeeService, 
   ficheInfractionService 
 } from '../../services/api';
 import DataTable from '../../components/DataTable';
-import './ControleurDetails.css';
+import './EmployeeDetails.css';
 import { 
   FaUser, 
   FaIdCard, 
@@ -18,13 +18,14 @@ import {
   FaCreditCard, 
   FaBoxOpen,
   FaArrowLeft,
-  FaCalendarAlt
+  FaCalendarAlt,
+  FaUserShield
 } from 'react-icons/fa';
 
-function ControleurDetails() {
+function EmployeeDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [controleur, setControleur] = useState(null);
+  const [employee, setEmployee] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('all');
@@ -43,15 +44,15 @@ function ControleurDetails() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Fetch controleur details
-        const controleurRes = await controleurService.getById(id);
-        setControleur(controleurRes.data);
+        // Fetch employee details
+        const employeeRes = await employeeService.getById(id);
+        setEmployee(employeeRes.data);
         
         // Fetch all related data
         const [epavesRes, cartesRes, fichesRes] = await Promise.all([
-          epaveService.getByController(id),
-          cartePerimeeService.getByController(id),
-          ficheInfractionService.getByController(id)
+          epaveService.getByAgentCom(id),
+          cartePerimeeService.getByAgentCom(id),
+          ficheInfractionService.getByAgentCom(id)
         ]);
         
         setEpaves(epavesRes.data);
@@ -68,8 +69,8 @@ function ControleurDetails() {
         
         setError(null);
       } catch (err) {
-        console.error('Error fetching controleur details:', err);
-        setError('Erreur lors du chargement des détails du contrôleur.');
+        console.error('Error fetching employee details:', err);
+        setError('Erreur lors du chargement des détails de l\'employé.');
       } finally {
         setLoading(false);
       }
@@ -83,6 +84,16 @@ function ControleurDetails() {
     if (!dateString) return '-';
     const date = new Date(dateString);
     return date.toLocaleDateString('fr-FR');
+  };
+  
+  // Function to get role display text
+  const getRoleDisplay = (role) => {
+    switch (role) {
+      case 'AGENT_COM': return 'Agent Commercial';
+      case 'CHEF_SECT': return 'Chef de Section';
+      case 'CHEF_ANTE': return 'Chef d\'Antenne';
+      default: return role;
+    }
   };
   
   // Get data for current tab
@@ -299,11 +310,11 @@ function ControleurDetails() {
     return <div className="loading">Chargement...</div>;
   }
   
-  if (error && !controleur) {
+  if (error && !employee) {
     return (
       <div className="error-container">
         <div className="error-message">{error}</div>
-        <button onClick={() => navigate('/controleurs')} className="back-button">
+        <button onClick={() => navigate('/employees')} className="back-button">
           <FaArrowLeft /> Retour à la liste
         </button>
       </div>
@@ -311,38 +322,36 @@ function ControleurDetails() {
   }
   
   return (
-    <div className="controleur-details-page">
+    <div className="employee-details-page">
       <div className="page-header">
-        <Link to="/controleurs" className="back-link">
-          <FaArrowLeft /> Retour aux contrôleurs
+        <Link to="/employees" className="back-link">
+          <FaArrowLeft /> Retour aux Utilisateurs
         </Link>
-        <h1>Détails du contrôleur</h1>
+        <h1>Détails de l'Utilisateur</h1>
       </div>
       
-      <div className="controleur-profile">
+      <div className="employee-profile">
         <div className="profile-header">
           <div className="profile-avatar">
-            {controleur?.prenom?.charAt(0)}{controleur?.nom?.charAt(0)}
+            {employee?.prenom?.charAt(0)}{employee?.nom?.charAt(0)}
           </div>
           <div className="profile-info">
-            <h2>{controleur?.prenom} {controleur?.nom}</h2>
+            <h2>{employee?.prenom} {employee?.nom}</h2>
             <div className="info-item">
               <FaIdCard className="info-icon" />
-              <span>Matricule: {controleur?.id}</span>
+              <span>Matricule: {employee?.id}</span>
+            </div>
+            <div className="info-item">
+              <FaUserShield className={`info-icon role-${employee?.role?.toLowerCase()}`} />
+              <span>Rôle: {getRoleDisplay(employee?.role)}</span>
             </div>
             <div className="info-item">
               <FaMapMarkerAlt className="info-icon" />
-              <span>Antenne: {controleur?.antenneName}</span>
+              <span>Antenne: {employee?.antenneName}</span>
             </div>
-            {controleur?.dateEmbauche && (
-              <div className="info-item">
-                <FaCalendarAlt className="info-icon" />
-                <span>Date d'embauche: {formatDate(controleur.dateEmbauche)}</span>
-              </div>
-            )}
           </div>
           <div className="profile-actions">
-            <Link to={`/controleurs/${id}/edit`} className="edit-button">
+            <Link to={`/employees/${id}/edit`} className="edit-button">
               Modifier
             </Link>
           </div>
@@ -388,7 +397,7 @@ function ControleurDetails() {
         </div>
       </div>
       
-      <div className="controleur-tabs">
+      <div className="employee-tabs">
         <button 
           className={`tab-button ${activeTab === 'all' ? 'active' : ''}`}
           onClick={() => setActiveTab('all')}
@@ -435,94 +444,94 @@ function ControleurDetails() {
             options: [
               ...new Set(
                 [
-                    ...epaves.map(e => e.train), 
-                    ...cartes.map(c => c.train), 
-                    ...fiches.map(f => f.train)
-                  ]
-                )
-              ].filter(Boolean).sort().map(value => ({ value, label: value })),
-              placeholderOption: 'Tous les trains',
-              filterFn: (item, value) => item.train === value
-            },
-            ...(activeTab === 'epaves' || activeTab === 'all' ? [
-              {
-                id: 'gareDepot',
-                label: 'Gare/Dépôt',
-                type: 'select',
-                options: [...new Set(epaves.map(e => e.gareDepot))]
-                  .filter(Boolean).sort().map(value => ({ value, label: value })),
-                placeholderOption: 'Toutes les gares',
-                filterFn: (item, value) => 
-                  item.type === 'epave' ? item.gareDepot === value : 
-                  activeTab === 'epaves' ? item.gareDepot === value : false
-              }
-            ] : []),
-            ...(activeTab === 'cartes' || activeTab === 'all' ? [
-              {
-                id: 'confort',
-                label: 'Classe',
-                type: 'select',
-                options: [
-                  { value: '1', label: '1ère classe' },
-                  { value: '2', label: '2ème classe' }
-                ],
-                placeholderOption: 'Toutes les classes',
-                filterFn: (item, value) => 
-                  item.type === 'carte' ? item.confort.toString() === value : 
-                  activeTab === 'cartes' ? item.confort.toString() === value : false
-              }
-            ] : []),
-            ...(activeTab === 'fiches' || activeTab === 'all' ? [
-              {
-                id: 'montantMin',
-                label: 'Montant min',
-                type: 'select',
-                options: [
-                  { value: '50', label: '50 Dh et plus' },
-                  { value: '100', label: '100 Dh et plus' },
-                  { value: '200', label: '200 Dh et plus' },
-                  { value: '500', label: '500 Dh et plus' }
-                ],
-                placeholderOption: 'Tous montants',
-                filterFn: (item, value) => 
-                  item.type === 'fiche' ? (item.montant || 0) >= parseFloat(value) : 
-                  activeTab === 'fiches' ? (item.montant || 0) >= parseFloat(value) : false
-              }
-            ] : [])
-          ]}
-          loading={false}
-          error={null}
-          title={getTabTitle()}
-          noDataMessage={getNoDataMessage()}
-          actions={{
-            edit: true,
-            view: false,
-            delete: false,
-            editPath: (item) => getItemDetailPath(item)
-          }}
-        />
-      </div>
-    );
-    
-    function getTabTitle() {
-      switch (activeTab) {
-        case 'epaves': return 'Épaves';
-        case 'cartes': return 'Cartes Périmées';
-        case 'fiches': return 'Fiches d\'infraction';
-        case 'all':
-        default: return 'Tous les éléments';
-      }
-    }
-    
-    function getNoDataMessage() {
-      switch (activeTab) {
-        case 'epaves': return 'Aucune épave trouvée pour ce contrôleur';
-        case 'cartes': return 'Aucune carte périmée trouvée pour ce contrôleur';
-        case 'fiches': return 'Aucune fiche d\'infraction trouvée pour ce contrôleur';
-        case 'all':
-        default: return 'Aucun élément trouvé pour ce contrôleur';
-      }
+                  ...epaves.map(e => e.train), 
+                  ...cartes.map(c => c.train), 
+                  ...fiches.map(f => f.train)
+                ]
+              )
+            ].filter(Boolean).sort().map(value => ({ value, label: value })),
+            placeholderOption: 'Tous les trains',
+            filterFn: (item, value) => item.train === value
+          },
+          ...(activeTab === 'epaves' || activeTab === 'all' ? [
+            {
+              id: 'gareDepot',
+              label: 'Gare/Dépôt',
+              type: 'select',
+              options: [...new Set(epaves.map(e => e.gareDepot))]
+                .filter(Boolean).sort().map(value => ({ value, label: value })),
+              placeholderOption: 'Toutes les gares',
+              filterFn: (item, value) => 
+                item.type === 'epave' ? item.gareDepot === value : 
+                activeTab === 'epaves' ? item.gareDepot === value : false
+            }
+          ] : []),
+          ...(activeTab === 'cartes' || activeTab === 'all' ? [
+            {
+              id: 'confort',
+              label: 'Classe',
+              type: 'select',
+              options: [
+                { value: '1', label: '1ère classe' },
+                { value: '2', label: '2ème classe' }
+              ],
+              placeholderOption: 'Toutes les classes',
+              filterFn: (item, value) => 
+                item.type === 'carte' ? item.confort.toString() === value : 
+                activeTab === 'cartes' ? item.confort.toString() === value : false
+            }
+          ] : []),
+          ...(activeTab === 'fiches' || activeTab === 'all' ? [
+            {
+              id: 'montantMin',
+              label: 'Montant min',
+              type: 'select',
+              options: [
+                { value: '50', label: '50 Dh et plus' },
+                { value: '100', label: '100 Dh et plus' },
+                { value: '200', label: '200 Dh et plus' },
+                { value: '500', label: '500 Dh et plus' }
+              ],
+              placeholderOption: 'Tous montants',
+              filterFn: (item, value) => 
+                item.type === 'fiche' ? (item.montant || 0) >= parseFloat(value) : 
+                activeTab === 'fiches' ? (item.montant || 0) >= parseFloat(value) : false
+            }
+          ] : [])
+        ]}
+        loading={false}
+        error={null}
+        title={getTabTitle()}
+        noDataMessage={getNoDataMessage()}
+        actions={{
+          edit: true,
+          view: false,
+          delete: false,
+          editPath: (item) => getItemDetailPath(item)
+        }}
+      />
+    </div>
+  );
+  
+  function getTabTitle() {
+    switch (activeTab) {
+      case 'epaves': return 'Épaves';
+      case 'cartes': return 'Cartes Périmées';
+      case 'fiches': return 'Fiches d\'infraction';
+      case 'all':
+      default: return 'Tous les éléments';
     }
   }
   
-  export default ControleurDetails;
+  function getNoDataMessage() {
+    switch (activeTab) {
+      case 'epaves': return 'Aucune épave trouvée pour cet Agent Comercial';
+      case 'cartes': return 'Aucune carte périmée trouvée pour Agent Comercial';
+      case 'fiches': return 'Aucune fiche d\'infraction trouvée pour Agent Comercial';
+      case 'all':
+      default: return 'Aucun élément trouvé pour cet Agent Comercial';
+    }
+  }
+}
+
+export default EmployeeDetails;

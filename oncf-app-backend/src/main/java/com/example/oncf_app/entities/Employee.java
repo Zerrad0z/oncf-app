@@ -1,6 +1,7 @@
 package com.example.oncf_app.entities;
 
 import com.example.oncf_app.enums.Role;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,7 +21,7 @@ import java.util.List;
 public class Employee implements UserDetails {
 
     @Id
-    private Long id; // Matricule number (unique identifier)
+    private String id; // Matricule number (unique identifier)
 
     @Column(unique = true, nullable = false)
     private String username;
@@ -36,6 +37,7 @@ public class Employee implements UserDetails {
 
     @ManyToOne
     @JoinColumn(name = "antenne_id")
+    @JsonBackReference("antenne-employee") // Add this
     private Antenne antenne;
 
     @OneToMany(mappedBy = "agentCom")

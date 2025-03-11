@@ -1,14 +1,15 @@
 package com.example.oncf_app.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "antenne")
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Antenne {
@@ -20,5 +21,6 @@ public class Antenne {
     private String nom;
 
     @OneToMany(mappedBy = "antenne")
-    private List<Employee> employees;
+    @JsonManagedReference("antenne-employee") // Add this
+    private List<Employee> employees = new ArrayList<>();
 }

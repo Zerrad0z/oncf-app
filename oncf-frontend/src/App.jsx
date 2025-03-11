@@ -25,6 +25,10 @@ import ControleursList from "./pages/controleurs/ControleursList";
 import ControleurDetails from "./pages/controleurs/ControleurDetails";
 import ControleurForm from "./pages/controleurs/ControleurForm";
 
+// Import Employee components
+import EmployeesList from "./pages/employees/EmployeesList";
+import EmployeeDetails from "./pages/employees/EmployeeDetails";
+import EmployeeForm from "./pages/employees/EmployeeForm";
 
 function App() {
   return (
@@ -63,12 +67,20 @@ function App() {
               <Route path=":id/edit" element={<CarteForm />} />
             </Route>
             
-            {/* Controleurs routes - MOVED INSIDE the Layout */}
+            {/* Controleurs routes */}
             <Route path="controleurs">
               <Route index element={<ControleursList />} />
               <Route path=":id/details" element={<ControleurDetails />} />
               <Route path=":id/edit" element={<ControleurForm />} />
               <Route path="new" element={<ControleurForm />} />
+            </Route>
+            
+            {/* Employees routes */}
+            <Route path="employees">
+              <Route index element={<EmployeesList />} />
+              <Route path=":id/details" element={<EmployeeDetails />} />
+              <Route path=":id/edit" element={<EmployeeForm />} />
+              <Route path="new" element={<EmployeeForm />} />
             </Route>
             
             {/* Catch-all route for protected area */}

@@ -42,6 +42,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     setUser(null);
+    
+    // Use window.location instead of useNavigate
+    window.location.href = '/login';
   };
 
   const contextValue: AuthContextType = {

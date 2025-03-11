@@ -115,14 +115,14 @@ function Layout() {
               <li className={isActive('/controleurs') ? 'active' : ''}>
                 <Link to="/controleurs">
                   <FaIdBadge className="nav-icon" />
-                  <span className="nav-text">Contrôleurs</span>
+                  <span className="nav-text">ACT</span>
                   {isActive('/controleurs') && <FaChevronRight className="active-indicator" />}
                 </Link>
               </li>
               <li className={isActive('/employees') ? 'active' : ''}>
                 <Link to="/employees">
                   <FaUsers className="nav-icon" />
-                  <span className="nav-text">Employés</span>
+                  <span className="nav-text">Utilisateurs</span>
                   {isActive('/employees') && <FaChevronRight className="active-indicator" />}
                 </Link>
               </li>

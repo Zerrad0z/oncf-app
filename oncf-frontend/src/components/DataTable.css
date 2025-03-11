@@ -11,7 +11,7 @@
 
 /* Header styles */
 .datatable-header {
-  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, #3D3D3D 0%, #FFA726 100%);
   padding: 22px 28px;
   color: white;
   display: flex;
@@ -172,13 +172,13 @@
   border-radius: 8px;
   font-size: 14px;
   transition: all 0.2s ease;
-  background-color: #f9fafb;
+  background-color: #FFF8E1; /* Cream background */
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #FFA726; /* Orange border */
+  box-shadow: 0 0 0 3px rgba(255, 167, 38, 0.1); /* Light orange shadow */
   background-color: white;
 }
 
@@ -225,7 +225,7 @@
   right: -4px;
   width: 8px;
   height: 8px;
-  background-color: #3b82f6;
+  background-color: #FFA726; /* Orange indicator */
   border-radius: 50%;
 }
 
@@ -246,15 +246,15 @@
   border-radius: 8px;
   font-size: 14px;
   appearance: none;
-  background-color: #f9fafb;
+  background-color: #FFF8E1; /* Cream background */
   transition: all 0.2s ease;
   color: #1f2937;
 }
 
 .filter-select:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #FFA726; /* Orange border */
+  box-shadow: 0 0 0 3px rgba(255, 167, 38, 0.1); /* Light orange shadow */
   background-color: white;
 }
 
@@ -278,15 +278,15 @@
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   font-size: 14px;
-  background-color: #f9fafb;
+  background-color: #FFF8E1; /* Cream background */
   transition: all 0.2s ease;
   color: #1f2937;
 }
 
 .filter-date:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #FFA726; /* Orange border */
+  box-shadow: 0 0 0 3px rgba(255, 167, 38, 0.1); /* Light orange shadow */
   background-color: white;
 }
 
@@ -334,7 +334,7 @@
   align-items: center;
   padding: 16px 24px;
   border-bottom: 1px solid #eaecf0;
-  background-color: #f9fafb;
+  background-color: #FFF8E1; /* Cream background */
 }
 
 .results-count {
@@ -366,7 +366,7 @@
 
 .items-per-page-select:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: #FFA726; /* Orange border */
 }
 
 /* Table styles */
@@ -386,7 +386,7 @@
   position: sticky;
   top: 0;
   background-color: #f8fafc;
-  color: #334155;
+  color: #3D3D3D; /* Dark gray text instead of orange */
   font-weight: 600;
   text-align: left;
   padding: 16px 20px;
@@ -412,13 +412,14 @@
 }
 
 .sortable-header.sorted {
-  background-color: #ebf5ff;
+  background-color: rgba(255, 167, 38, 0.1); /* Light orange background */
+  color: #3D3D3D; /* Ensuring sorted headers also have dark text */
 }
 
 .sort-indicator {
   display: flex;
   align-items: center;
-  color: #3b82f6;
+  color: #FFA726; /* Orange color */
   opacity: 0.8;
 }
 
@@ -453,7 +454,7 @@
 }
 
 .data-table tbody tr:hover {
-  background-color: #f1f5f9;
+  background-color: rgba(255, 167, 38, 0.05); /* Very light orange hover */
 }
 
 .content-cell {
@@ -491,7 +492,7 @@
   transition: all 0.15s ease;
   color: white !important;
   box-shadow: none;
-  background-color: #3b82f6 !important;
+  background-color: #FFA726 !important; /* Orange default */
   padding: 0;
 }
 
@@ -502,15 +503,15 @@
 }
 
 .data-table .view-button {
-  background-color: #10b981 !important;
+  background-color: #4DB6AC !important; /* Teal */
 }
 
 .data-table .edit-button {
-  background-color: #3b82f6 !important;
+  background-color: #FFA726 !important; /* Orange */
 }
 
 .data-table .delete-button {
-  background-color: #ef4444 !important;
+  background-color: #ef4444 !important; /* Keep red for delete */
 }
 
 .data-table .action-icon {
@@ -527,7 +528,7 @@
   justify-content: center;
   padding: 60px 24px;
   color: #6b7280;
-  background-color: #f9fafb;
+  background-color: #FFF8E1; /* Cream background */
 }
 
 .no-results-icon {
@@ -556,7 +557,7 @@
   display: flex;
   justify-content: center;
   border-top: 1px solid #f1f5f9;
-  background-color: #f9fafb;
+  background-color: #FFF8E1; /* Cream background */
 }
 
 .pagination {
@@ -581,9 +582,9 @@
 }
 
 .pagination-button:not(:disabled):hover {
-  background-color: #f3f4f6;
-  border-color: #d1d5db;
-  color: #1f2937;
+  background-color: rgba(255, 167, 38, 0.1); /* Light orange hover */
+  border-color: #FFA726; /* Orange border */
+  color: #FFA726; /* Orange text */
 }
 
 .pagination-button:disabled {
@@ -621,14 +622,14 @@
 }
 
 .pagination-number:hover {
-  background-color: #f3f4f6;
-  border-color: #d1d5db;
-  color: #1f2937;
+  background-color: rgba(255, 167, 38, 0.1); /* Light orange hover */
+  border-color: #FFA726; /* Orange border */
+  color: #FFA726; /* Orange text */
 }
 
 .pagination-number.active {
-  background-color: #3b82f6;
-  border-color: #3b82f6;
+  background-color: #FFA726; /* Orange background */
+  border-color: #FFA726; /* Orange border */
   color: white;
 }
 
@@ -659,9 +660,9 @@
   width: 48px;
   height: 48px;
   margin-bottom: 16px;
-  border: 3px solid rgba(59, 130, 246, 0.1);
+  border: 3px solid rgba(255, 167, 38, 0.1); /* Light orange border */
   border-radius: 50%;
-  border-top-color: #3b82f6;
+  border-top-color: #FFA726; /* Orange spinner */
   animation: spin 1s linear infinite;
 }
 

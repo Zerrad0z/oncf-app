@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ControleurDTO {
-    private Long id;
+    private String id;
     private String nom;
     private String prenom;
     private Long antenneId;

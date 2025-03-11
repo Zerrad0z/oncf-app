@@ -22,7 +22,7 @@ public class ControleurController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ControleurDTO> getControleurById(@PathVariable Long id) {
+    public ResponseEntity<ControleurDTO> getControleurById(@PathVariable String id) {
         return ResponseEntity.ok(controleurService.getControleurById(id));
     }
 
@@ -32,12 +32,12 @@ public class ControleurController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ControleurDTO> updateControleur(@PathVariable Long id, @RequestBody ControleurDTO controleurDTO) {
+    public ResponseEntity<ControleurDTO> updateControleur(@PathVariable String id, @RequestBody ControleurDTO controleurDTO) {
         return ResponseEntity.ok(controleurService.updateControleur(id, controleurDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteControleur(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteControleur(@PathVariable String id) {
         controleurService.deleteControleur(id);
         return ResponseEntity.noContent().build();
     }
@@ -56,17 +56,17 @@ public class ControleurController {
 
     // Additional endpoints for related items
     @GetMapping("/{id}/epaves")
-    public ResponseEntity<List<Object>> getControleurEpaves(@PathVariable Long id) {
+    public ResponseEntity<List<Object>> getControleurEpaves(@PathVariable String id) {
         return ResponseEntity.ok(controleurService.getControleurEpaves(id));
     }
 
     @GetMapping("/{id}/cartes")
-    public ResponseEntity<List<Object>> getControleurCartes(@PathVariable Long id) {
+    public ResponseEntity<List<Object>> getControleurCartes(@PathVariable String id) {
         return ResponseEntity.ok(controleurService.getControleurCartes(id));
     }
 
     @GetMapping("/{id}/fiches")
-    public ResponseEntity<List<Object>> getControleurFiches(@PathVariable Long id) {
+    public ResponseEntity<List<Object>> getControleurFiches(@PathVariable String id) {
         return ResponseEntity.ok(controleurService.getControleurFiches(id));
     }
 }

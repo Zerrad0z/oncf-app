@@ -70,12 +70,12 @@ public class EpaveController {
     }
 
     @GetMapping("/controller/{controllerId}")
-    public ResponseEntity<List<EpaveDTO>> getEpavesByController(@PathVariable Long controllerId) {
+    public ResponseEntity<List<EpaveDTO>> getEpavesByController(@PathVariable String controllerId) {
         return ResponseEntity.ok(epaveService.getEpavesByControleur(controllerId));
     }
 
     @GetMapping("/agent-com/{agentComId}")
-    public ResponseEntity<List<EpaveDTO>> getEpavesByAgentCom(@PathVariable Long agentComId) {
+    public ResponseEntity<List<EpaveDTO>> getEpavesByAgentCom(@PathVariable String agentComId) {
         return ResponseEntity.ok(epaveService.getEpavesByAgentCom(agentComId));
     }
 }

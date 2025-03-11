@@ -1,7 +1,7 @@
-// src/pages/controleurs/ControleurForm.jsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { controleurService } from '../../services/api';
+import { controleurService, antenneService } from '../../services/api';
+import SuccessModal from '../../components/SuccessModal';
 import './ControleurForm.css';
 import { FaArrowLeft, FaSave } from 'react-icons/fa';
 
@@ -9,122 +9,147 @@ function ControleurForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditMode = !!id;
-  
+
   const [formData, setFormData] = useState({
     id: '',
     nom: '',
     prenom: '',
     antenneId: ''
   });
-  
+
   const [antennes, setAntennes] = useState([]);
-  const [loading, setLoading] = useState(isEditMode);
+  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
-  
+
+  // State for success modal
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+
   // Fetch antennes on component mount
+  const fetchAntennes = async () => {
+    try {
+      const response = await antenneService.getAll();
+      console.log('Antennes response:', response);
+  
+      // Handle stringified JSON response
+      const rawData = response.data;
+      const parsedData = typeof rawData === 'string' ? JSON.parse(rawData) : rawData;
+  
+      // Handle different response structures
+      let antennesData = parsedData;
+      if (parsedData.content) { // Handle paginated response
+        antennesData = parsedData.content;
+      }
+  
+      // Transform data
+      const cleanedAntennes = Array.isArray(antennesData) 
+        ? antennesData.map(antenne => ({
+            id: antenne.id,
+            nom: antenne.nom
+          }))
+        : [];
+  
+      setAntennes(cleanedAntennes);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching antennes:', err);
+      setError('Erreur lors du chargement des antennes.');
+      setAntennes([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch controleur data if editing
   useEffect(() => {
     const fetchAntennes = async () => {
       try {
-        // In a real app, uncomment this and use your actual antenne service
-        // const response = await antenneService.getAll();
-        // setAntennes(response.data);
-        
-        // Mock data for now
-        setAntennes([
-          { id: 1, nom: "Rabat Ville" },
-          { id: 2, nom: "Casablanca Voyageurs" },
-          { id: 3, nom: "Tanger" },
-          { id: 4, nom: "Marrakech" }
-        ]);
+        const response = await antenneService.getAll();
+        console.log('Raw API Response:', response.data); // Debugging
+  
+        if (Array.isArray(response.data)) {
+          // Now we can just set the entire array since `Employee` includes `antenne` as a nested object.
+          const cleanedAntennes = response.data.map(antenne => ({
+            id: antenne.id,
+            nom: antenne.nom
+          }));
+          setAntennes(cleanedAntennes);
+        } else {
+          console.warn('Unexpected API response format:', response.data);
+          setAntennes([]);
+        }
+  
+        setError(null);
       } catch (err) {
         console.error('Error fetching antennes:', err);
         setError('Erreur lors du chargement des antennes.');
+        setAntennes([]);
+      } finally {
+        setLoading(false);
       }
     };
-    
+  
     fetchAntennes();
   }, []);
   
-  // If editing, fetch the controleur data
-  useEffect(() => {
-    if (isEditMode) {
-      const fetchControleur = async () => {
-        try {
-          setLoading(true);
-          const response = await controleurService.getById(id);
-          setFormData({
-            id: response.data.id || '',
-            nom: response.data.nom || '',
-            prenom: response.data.prenom || '',
-            antenneId: response.data.antenneId || ''
-          });
-          setError(null);
-        } catch (err) {
-          console.error('Error fetching controleur:', err);
-          setError('Erreur lors du chargement des données du contrôleur.');
-          
-          // Mock data for development
-          setFormData({
-            id,
-            nom: "Ouazzani",
-            prenom: "Samira",
-            antenneId: 1
-          });
-        } finally {
-          setLoading(false);
-        }
-      };
-      
-      fetchControleur();
-    }
-  }, [id, isEditMode]);
   
+
+  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'antenneId' ? parseInt(value, 10) || '' : value
+      [name]: name === 'antenneId' ? (value ? Number(value) : '') : value
     }));
   };
-  
+
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
-    
+
     try {
-      // Validate required fields
       if (!formData.id || !formData.nom || !formData.prenom || !formData.antenneId) {
         throw new Error('Veuillez remplir tous les champs obligatoires.');
       }
-      
-      // Prepare data for submission
+
       const dataToSubmit = {
         ...formData,
-        id: parseInt(formData.id, 10),
-        antenneId: parseInt(formData.antenneId, 10)
+        id: formData.id, // Keep as string for Controleur
+        antenneId: parseInt(formData.antenneId, 10) // Ensure it's a number
       };
-      
+
+      console.log('Submitting controleur data:', dataToSubmit);
+
       if (isEditMode) {
         await controleurService.update(id, dataToSubmit);
+        setSuccessMessage(`Le contrôleur ${formData.prenom} ${formData.nom} a été mis à jour avec succès!`);
       } else {
         await controleurService.create(dataToSubmit);
+        setSuccessMessage(`Le contrôleur ${formData.prenom} ${formData.nom} a été créé avec succès!`);
       }
-      
-      navigate('/controleurs');
+
+      setShowSuccessModal(true);
+
     } catch (err) {
       console.error('Error saving controleur:', err);
       setError(err.message || 'Erreur lors de l\'enregistrement. Veuillez réessayer.');
-    } finally {
       setSubmitting(false);
     }
   };
-  
+
+  // Handle modal close and redirect
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
+    navigate('/controleurs');
+  };
+
   if (loading) {
     return <div className="loading">Chargement...</div>;
   }
-  
+
   return (
     <div className="controleur-form-page">
       <div className="page-header">
@@ -133,18 +158,18 @@ function ControleurForm() {
         </Link>
         <h1>{isEditMode ? 'Modifier' : 'Ajouter'} un contrôleur</h1>
       </div>
-      
+
       {error && <div className="error-message">{error}</div>}
-      
+
       <form onSubmit={handleSubmit} className="controleur-form">
         <div className="form-section">
           <h2>Informations personnelles</h2>
-          
+
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="id">Matricule*</label>
               <input
-                type="number"
+                type="text"
                 id="id"
                 name="id"
                 value={formData.id}
@@ -156,7 +181,7 @@ function ControleurForm() {
               <div className="form-hint">Numéro d'identification unique</div>
             </div>
           </div>
-          
+
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="nom">Nom*</label>
@@ -170,7 +195,7 @@ function ControleurForm() {
                 placeholder="Nom de famille"
               />
             </div>
-            
+
             <div className="form-group">
               <label htmlFor="prenom">Prénom*</label>
               <input
@@ -184,49 +209,40 @@ function ControleurForm() {
               />
             </div>
           </div>
-        </div>
-        
-        <div className="form-section">
-          <h2>Informations professionnelles</h2>
-          
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="antenneId">Antenne*</label>
-              <select
-                id="antenneId"
-                name="antenneId"
-                value={formData.antenneId}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Sélectionner une antenne</option>
-                {antennes.map(antenne => (
+
+          <div className="form-group">
+            <label htmlFor="antenneId">Antenne*</label>
+            <select
+              id="antenneId"
+              name="antenneId"
+              value={formData.antenneId || ''}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Sélectionner une antenne</option>
+              {antennes.length > 0 ? (
+                antennes.map(antenne => (
                   <option key={antenne.id} value={antenne.id}>
                     {antenne.nom}
                   </option>
-                ))}
-              </select>
-            </div>
+                ))
+              ) : (
+                <option disabled>Aucune antenne disponible</option>
+              )}
+            </select>
           </div>
         </div>
-        
-        <div className="form-actions">
-          <Link to="/controleurs" className="cancel-button">
-            Annuler
-          </Link>
-          <button 
-            type="submit" 
-            className="submit-button"
-            disabled={submitting}
-          >
-            <FaSave />
-            {submitting 
-              ? 'Enregistrement...' 
-              : isEditMode ? 'Enregistrer les modifications' : 'Créer le contrôleur'
-            }
-          </button>
-        </div>
+
+        <button type="submit" className="submit-button" disabled={submitting}>
+          <FaSave /> {submitting ? 'Enregistrement...' : 'Enregistrer'}
+        </button>
       </form>
+
+      <SuccessModal
+        show={showSuccessModal}
+        message={successMessage}
+        onClose={handleSuccessModalClose}
+      />
     </div>
   );
 }

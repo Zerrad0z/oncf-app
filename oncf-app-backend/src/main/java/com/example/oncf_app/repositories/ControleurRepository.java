@@ -8,6 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ControleurRepository extends JpaRepository<Controleur, Long> {
+public interface ControleurRepository extends JpaRepository<Controleur, String> {
     List<Controleur> findByAntenneId(Long antenneId);
 }

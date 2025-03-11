@@ -82,12 +82,12 @@ public class FicheInfractionController {
     }
 
     @GetMapping("/controller/{controllerId}")
-    public ResponseEntity<List<FicheInfractionDTO>> getFicheInfractionsByController(@PathVariable Long controllerId) {
+    public ResponseEntity<List<FicheInfractionDTO>> getFicheInfractionsByController(@PathVariable String controllerId) {
         return ResponseEntity.ok(ficheInfractionService.getFicheInfractionsByController(controllerId));
     }
 
     @GetMapping("/agent-com/{agentComId}")
-    public ResponseEntity<List<FicheInfractionDTO>> getFicheInfractionsByAgentCom(@PathVariable Long agentComId) {
+    public ResponseEntity<List<FicheInfractionDTO>> getFicheInfractionsByAgentCom(@PathVariable String agentComId) {
         return ResponseEntity.ok(ficheInfractionService.getFicheInfractionsByAgentCom(agentComId));
     }
 

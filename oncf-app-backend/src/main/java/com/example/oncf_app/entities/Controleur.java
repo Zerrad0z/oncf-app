@@ -1,5 +1,6 @@
 package com.example.oncf_app.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +15,7 @@ import java.util.List;
 public class Controleur {
 
     @Id
-    private Long id; // Matricule number (unique identifier)
+    private String id; // Matricule number (unique identifier)
 
     private String nom;
 
@@ -22,6 +23,7 @@ public class Controleur {
 
     @ManyToOne
     @JoinColumn(name = "antenne_id")
+    @JsonIgnoreProperties("employees") // Prevent serialization of employees
     private Antenne antenne;
 
     @OneToMany(mappedBy = "controleur")

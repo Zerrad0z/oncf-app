@@ -121,19 +121,6 @@ function FichesList() {
       placeholderOption: 'Tous les trains',
       filterFn: (item, value) => item.train === value
     },
-    {
-      id: 'montantMin',
-      label: 'Montant minimum',
-      type: 'select',
-      options: [
-        { value: '50', label: '50 Dh et plus' },
-        { value: '100', label: '100 Dh et plus' },
-        { value: '200', label: '200 Dh et plus' },
-        { value: '500', label: '500 Dh et plus' }
-      ],
-      placeholderOption: 'Tous les montants',
-      filterFn: (item, value) => item.montant >= parseFloat(value)
-    }
   ];
   
   // Helper function to format dates

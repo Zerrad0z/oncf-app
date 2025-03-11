@@ -16,8 +16,8 @@ public interface FicheInfractionRepository extends JpaRepository<FicheInfraction
     List<FicheInfraction> findByGareDepot(String gareDepot);
     List<FicheInfraction> findByGareD(String gareD);
     List<FicheInfraction> findByGareA(String gareA);
-    List<FicheInfraction> findByControleurId(Long controleurId);
-    List<FicheInfraction> findByAgentComId(Long agentComId);
+    List<FicheInfraction> findByControleurId(String controleurId);
+    List<FicheInfraction> findByAgentComId(String agentComId);
 
     @Query("SELECT f FROM FicheInfraction f WHERE f.date BETWEEN :startDate AND :endDate")
     List<FicheInfraction> findByDateBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);

@@ -119,7 +119,7 @@ public class FicheInfractionServiceImpl implements FicheInfractionService {
     }
 
     @Override
-    public List<FicheInfractionDTO> getFicheInfractionsByAgentCom(Long agentComId) {
+    public List<FicheInfractionDTO> getFicheInfractionsByAgentCom(String agentComId) {
         return ficheInfractionRepository.findByAgentComId(agentComId).stream()
                 .map(ficheInfractionMapper::toDto)
                 .collect(Collectors.toList());
@@ -148,7 +148,7 @@ public class FicheInfractionServiceImpl implements FicheInfractionService {
     }
 
     @Override
-    public List<FicheInfractionDTO> getFicheInfractionsByController(Long controleurId) {
+    public List<FicheInfractionDTO> getFicheInfractionsByController(String controleurId) {
         return ficheInfractionRepository.findByControleurId(controleurId).stream()
                 .map(ficheInfractionMapper::toDto)
                 .collect(Collectors.toList());

@@ -31,7 +31,7 @@ public class ControleurServiceImpl implements ControleurService {
     }
 
     @Override
-    public ControleurDTO getControleurById(Long id) {
+    public ControleurDTO getControleurById(String id) {
         Controleur controleur = controleurRepository.findById(id)
                 .orElseThrow(() -> ApiException.notFound("Controleur", id));
         return controleurMapper.toDto(controleur);
@@ -58,7 +58,7 @@ public class ControleurServiceImpl implements ControleurService {
     }
 
     @Override
-    public ControleurDTO updateControleur(Long id, ControleurDTO controleurDTO) {
+    public ControleurDTO updateControleur(String id, ControleurDTO controleurDTO) {
         Controleur existingControleur = controleurRepository.findById(id)
                 .orElseThrow(() -> ApiException.notFound("Controleur", id));
 
@@ -78,7 +78,7 @@ public class ControleurServiceImpl implements ControleurService {
     }
 
     @Override
-    public void deleteControleur(Long id) {
+    public void deleteControleur(String id) {
         if (!controleurRepository.existsById(id)) {
             throw ApiException.notFound("Controleur", id);
         }
@@ -108,7 +108,7 @@ public class ControleurServiceImpl implements ControleurService {
     }
 
     @Override
-    public List<Object> getControleurEpaves(Long controllerId) {
+    public List<Object> getControleurEpaves(String controllerId) {
         // Verify controleur exists
         Controleur controleur = controleurRepository.findById(controllerId)
                 .orElseThrow(() -> ApiException.notFound("Controleur", controllerId));
@@ -121,7 +121,7 @@ public class ControleurServiceImpl implements ControleurService {
     }
 
     @Override
-    public List<Object> getControleurCartes(Long controllerId) {
+    public List<Object> getControleurCartes(String controllerId) {
         Controleur controleur = controleurRepository.findById(controllerId)
                 .orElseThrow(() -> ApiException.notFound("Controleur", controllerId));
 
@@ -131,7 +131,7 @@ public class ControleurServiceImpl implements ControleurService {
     }
 
     @Override
-    public List<Object> getControleurFiches(Long controllerId) {
+    public List<Object> getControleurFiches(String controllerId) {
         Controleur controleur = controleurRepository.findById(controllerId)
                 .orElseThrow(() -> ApiException.notFound("Controleur", controllerId));
 

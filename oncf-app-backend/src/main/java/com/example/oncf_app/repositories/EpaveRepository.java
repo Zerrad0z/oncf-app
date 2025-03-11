@@ -14,8 +14,8 @@ public interface EpaveRepository extends JpaRepository<Epave, Long> {
     List<Epave> findByDate(LocalDate date);
     List<Epave> findByTrain(String train);
     List<Epave> findByGareDepot(String gareDepot);
-    List<Epave> findByControleurId(Long controleurId);
-    List<Epave> findByAgentComId(Long agentComId);
+    List<Epave> findByControleurId(String controleurId);
+    List<Epave> findByAgentComId(String agentComId);
     @Query("SELECT e FROM Epave e WHERE e.date BETWEEN :startDate AND :endDate")
     List<Epave> findByDateBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }

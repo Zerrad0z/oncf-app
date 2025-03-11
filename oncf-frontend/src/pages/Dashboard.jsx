@@ -149,10 +149,6 @@ function Dashboard() {
               <FaCalendarAlt className="date-icon" />
               <span>{capitalizedDate}</span>
             </div>
-            <div className="user-info">
-              <FaUserAlt className="user-icon" />
-              <span>Bonjour, {user?.nom || 'Utilisateur'}</span>
-            </div>
           </div>
         </div>
       </div>

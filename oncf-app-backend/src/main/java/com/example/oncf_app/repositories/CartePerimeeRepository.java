@@ -17,8 +17,8 @@ public interface CartePerimeeRepository extends JpaRepository<CartePerimee, Long
     List<CartePerimee> findByGareD(String gareD);
     List<CartePerimee> findByGareA(String gareA);
     List<CartePerimee> findByConfort(Integer confort);
-    List<CartePerimee> findByControleurId(Long controleurId);
-    List<CartePerimee> findByAgentComId(Long agentComId);
+    List<CartePerimee> findByControleurId(String controleurId);
+    List<CartePerimee> findByAgentComId(String agentComId);
 
     @Query("SELECT c FROM CartePerimee c WHERE c.date BETWEEN :startDate AND :endDate")
     List<CartePerimee> findByDateBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);

@@ -8,7 +8,7 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background-color: #f5f5f5;
+  background-color: #FFF8E1; /* Cream/off-white background */
   color: #333;
 }
 
@@ -25,7 +25,7 @@ body {
   display: flex;
   flex-direction: column;
   width: 280px;
-  background-color: #1a2c42;
+  background-color: #3D3D3D; /* Dark gray sidebar */
   color: #fff;
   transition: all 0.3s ease;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
@@ -42,7 +42,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .logo {
@@ -78,7 +78,7 @@ body {
   display: flex;
   align-items: center;
   padding: 0.875rem 1.5rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
   transition: all 0.2s ease;
   position: relative;
@@ -86,13 +86,13 @@ body {
 
 .sidebar-nav li a:hover {
   color: #fff;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-nav li.active a {
   color: #fff;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-left: 4px solid #00a8ff;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-left: 4px solid #4DB6AC; /* Teal accent */
   padding-left: calc(1.5rem - 4px);
 }
 
@@ -111,7 +111,7 @@ body {
 
 .sidebar-footer {
   padding: 1rem 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .user-info {
@@ -123,7 +123,7 @@ body {
 .user-avatar {
   width: 40px;
   height: 40px;
-  background-color: #00a8ff;
+  background-color: #4DB6AC; /* Teal */
   color: white;
   border-radius: 50%;
   display: flex;
@@ -145,14 +145,14 @@ body {
 
 .user-role {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .logout-button {
   display: flex;
   align-items: center;
   padding: 0.625rem 1rem;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.15);
   border-radius: 6px;
   color: white;
   text-decoration: none;
@@ -164,7 +164,7 @@ body {
 }
 
 .logout-button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.25);
 }
 
 /* Main content wrapper */
@@ -204,7 +204,7 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #1a2c42;
+  background-color: #3D3D3D; /* Dark gray to match sidebar */
   color: white;
   border: none;
   cursor: pointer;
@@ -225,16 +225,17 @@ body {
 
 /* Footer */
 .footer {
-  background-color: #f0f0f0;
+  background-color: #B2DFDB; /* Mint green */
   padding: 1rem;
   text-align: center;
   font-size: 0.875rem;
-  color: #666;
+  color: #333;
 }
 
 /* Dashboard */
 .dashboard h1 {
   margin-bottom: 2rem;
+  color: #FFA726; /* Orange heading */
 }
 
 .stats-container {
@@ -263,13 +264,13 @@ body {
   justify-content: center;
   width: 50px;
   height: 50px;
-  background-color: rgba(0, 51, 102, 0.1);
+  background-color: rgba(255, 167, 38, 0.15); /* Light orange */
   border-radius: 10px;
   margin-bottom: 1rem;
 }
 
 .stat-card-icon svg {
-  color: #003366;
+  color: #FFA726; /* Orange */
   font-size: 1.5rem;
 }
 
@@ -283,7 +284,7 @@ body {
 .stat-number {
   font-size: 2rem;
   font-weight: bold;
-  color: #003366;
+  color: #FFA726; /* Orange */
   margin: 0.25rem 0 0.5rem;
 }
 
@@ -318,7 +319,7 @@ body {
 .quick-actions h2 {
   margin-bottom: 1rem;
   font-size: 1.25rem;
-  color: #1a2c42;
+  color: #FFA726; /* Orange */
 }
 
 .action-buttons {
@@ -330,8 +331,8 @@ body {
 .action-button {
   display: flex;
   align-items: center;
-  background-color: #f0f7ff;
-  color: #0066cc;
+  background-color: #FFF8E1; /* Cream */
+  color: #FFA726; /* Orange */
   padding: 1rem;
   border-radius: 8px;
   text-decoration: none;
@@ -345,7 +346,7 @@ body {
 }
 
 .action-button:hover {
-  background-color: #e0f0ff;
+  background-color: rgba(255, 167, 38, 0.1); /* Light orange */
   transform: translateY(-2px);
 }
 
@@ -366,14 +367,14 @@ body {
 
 .table-header h1 {
   font-size: 1.5rem;
-  color: #1a2c42;
+  color: #FFA726; /* Orange */
   margin: 0;
 }
 
 .add-button {
   display: flex;
   align-items: center;
-  background-color: #0066cc;
+  background-color: #FFA726; /* Orange */
   color: white;
   padding: 0.625rem 1rem;
   border-radius: 6px;
@@ -383,7 +384,7 @@ body {
 }
 
 .add-button:hover {
-  background-color: #0055aa;
+  background-color: #FF9800; /* Darker orange */
 }
 
 .button-icon {
@@ -426,8 +427,8 @@ body {
 
 .search-input:focus {
   outline: none;
-  border-color: #0066cc;
-  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+  border-color: #FFA726; /* Orange */
+  box-shadow: 0 0 0 3px rgba(255, 167, 38, 0.1); /* Light orange */
 }
 
 .filter-field {
@@ -460,8 +461,8 @@ body {
 
 .filter-select:focus {
   outline: none;
-  border-color: #0066cc;
-  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+  border-color: #FFA726; /* Orange */
+  box-shadow: 0 0 0 3px rgba(255, 167, 38, 0.1); /* Light orange */
 }
 
 .select-wrapper::after {
@@ -493,8 +494,8 @@ body {
 
 .filter-date:focus {
   outline: none;
-  border-color: #0066cc;
-  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+  border-color: #FFA726; /* Orange */
+  box-shadow: 0 0 0 3px rgba(255, 167, 38, 0.1); /* Light orange */
 }
 
 .calendar-icon {
@@ -559,15 +560,15 @@ body {
 }
 
 .data-table th {
-  background-color: #f5f7fa;
+  background-color: #FFF8E1; /* Cream */
   font-weight: 600;
-  color: #495057;
-  text-transform: uppercase;
+  color: #3D3D3D;
+    text-transform: uppercase;
   font-size: 0.75rem;
   letter-spacing: 0.5px;
   padding: 1rem;
   text-align: left;
-  border-bottom: 2px solid #e9ecef;
+  border-bottom: 2px solid #FFA726; /* Orange border */
 }
 
 .data-table td {
@@ -582,7 +583,7 @@ body {
 }
 
 .data-table tr:hover td {
-  background-color: #f8f9fa;
+  background-color: rgba(255, 167, 38, 0.05); /* Very light orange */
 }
 
 .sortable-header {
@@ -625,11 +626,11 @@ body {
 }
 
 .edit-button {
-  color: #2196f3;
+  color: #FFA726; /* Orange */
 }
 
 .view-button {
-  color: #009688;
+  color: #4DB6AC; /* Teal */
 }
 
 .delete-button {
@@ -672,8 +673,9 @@ body {
 }
 
 .pagination-button:hover:not(:disabled) {
-  background-color: #f8f9fa;
-  border-color: #ced4da;
+  background-color: #FFF8E1; /* Cream */
+  border-color: #FFA726; /* Orange */
+  color: #FFA726; /* Orange */
 }
 
 .pagination-button:disabled {
@@ -748,8 +750,8 @@ body {
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #0066cc;
-  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+  border-color: #FFA726; /* Orange */
+  box-shadow: 0 0 0 3px rgba(255, 167, 38, 0.1); /* Light orange */
 }
 
 .form-group textarea {
@@ -779,7 +781,7 @@ body {
 }
 
 .submit-button {
-  background-color: #0066cc;
+  background-color: #FFA726; /* Orange */
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -790,7 +792,7 @@ body {
 }
 
 .submit-button:hover {
-  background-color: #0055aa;
+  background-color: #FF9800; /* Darker orange */
 }
 
 /* Form rows for side-by-side form groups */

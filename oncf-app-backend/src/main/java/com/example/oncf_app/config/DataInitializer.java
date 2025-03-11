@@ -50,7 +50,7 @@
 //        if (employeeRepository.count() == 0) {
 //            // Create admin employee
 //            Employee adminEmployee = new Employee();
-//            adminEmployee.setId(1L);
+//            adminEmployee.setId("1");
 //            adminEmployee.setUsername("admin");
 //            adminEmployee.setPassword(passwordEncoder.encode("admin"));
 //            adminEmployee.setNom("System");
@@ -61,7 +61,7 @@
 //
 //            // Create agent employee
 //            Employee agentEmployee = new Employee();
-//            agentEmployee.setId(2L);
+//            agentEmployee.setId("2");
 //            agentEmployee.setUsername("agent");
 //            agentEmployee.setPassword(passwordEncoder.encode("agent"));
 //            agentEmployee.setNom("Agent");
@@ -70,15 +70,15 @@
 //            agentEmployee.setAntenne(rabatAntenne);
 //            employeeRepository.save(agentEmployee);
 //
-//// Create chef section employee
+//            // Create chef section employee
 //            Employee chefSectEmployee = new Employee();
-//            chefSectEmployee.setId(3L);
+//            chefSectEmployee.setId("3");
 //            chefSectEmployee.setUsername("chef");
 //            chefSectEmployee.setPassword(passwordEncoder.encode("chef"));
 //            chefSectEmployee.setNom("Chef");
 //            chefSectEmployee.setPrenom("de Section");
 //            chefSectEmployee.setRole(Role.CHEF_SECT);
-//            chefSectEmployee.setAntenne(rabatAntenne); // ERROR: Should be chefSectEmployee, not adminEmployee
+//            chefSectEmployee.setAntenne(rabatAntenne);
 //            employeeRepository.save(chefSectEmployee);
 //
 //            System.out.println("Initial employees created successfully");
@@ -86,12 +86,12 @@
 //
 //        // Initialize Controleurs (Employees)
 //        if (controleurRepository.count() == 0) {
-//            Controleur controleur1 = new Controleur(12345L, "Benjelloun", "Karim", rabatAntenne, null, null, null);
-//            Controleur controleur2 = new Controleur(23456L, "Ouazzani", "Samira", rabatAntenne, null, null, null);
-//            Controleur controleur3 = new Controleur(34567L, "Tahiri", "Ahmed", rabatAntenne, null, null, null);
-//            Controleur controleur4 = new Controleur(45678L, "Mansouri", "Fatima", casaAntenne, null, null, null);
-//            Controleur controleur5 = new Controleur(56789L, "Berrada", "Youssef", casaAntenne, null, null, null);
-//            Controleur controleur6 = new Controleur(67890L, "Ziani", "Nadia", casaAntenne, null, null, null);
+//            Controleur controleur1 = new Controleur("12345", "Benjelloun", "Karim", rabatAntenne, null, null, null);
+//            Controleur controleur2 = new Controleur("23456", "Ouazzani", "Samira", rabatAntenne, null, null, null);
+//            Controleur controleur3 = new Controleur("34567", "Tahiri", "Ahmed", rabatAntenne, null, null, null);
+//            Controleur controleur4 = new Controleur("45678", "Mansouri", "Fatima", casaAntenne, null, null, null);
+//            Controleur controleur5 = new Controleur("56789", "Berrada", "Youssef", casaAntenne, null, null, null);
+//            Controleur controleur6 = new Controleur("67890", "Ziani", "Nadia", casaAntenne, null, null, null);
 //
 //            controleurRepository.save(controleur1);
 //            controleurRepository.save(controleur2);

@@ -6,7 +6,7 @@ export interface AuthContextType {
   user: AuthUser | null;
   loading: boolean;
   isAuthenticated: boolean;
-  login: (user: AuthUser) => void;
+  login: (userData: AuthUser) => void;
   logout: () => void;
   hasRole: (role: Role) => boolean;
   isAgentCom: () => boolean;
@@ -14,7 +14,18 @@ export interface AuthContextType {
   isChefAnte: () => boolean;
 }
 
-// Create the auth context with default values
-const AuthContext = createContext<AuthContextType | null>(null);
+const defaultValue: AuthContextType = {
+  user: null,
+  loading: true,
+  isAuthenticated: false,
+  login: () => {},
+  logout: () => {},
+  hasRole: () => false,
+  isAgentCom: () => false,
+  isChefSect: () => false,
+  isChefAnte: () => false,
+};
+
+const AuthContext = createContext<AuthContextType>(defaultValue);
 
 export default AuthContext;

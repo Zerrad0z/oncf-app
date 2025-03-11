@@ -20,7 +20,7 @@ public class CartePerimeeDTO {
     private LocalDate dateDv;
     private LocalDate dateFv;
     private String suiteReservee;
-    private Long controllerId;
+    private String controllerId;
     private String controllerName; // For display purposes
-    private Long agentComId;
+    private String agentComId;
 }
