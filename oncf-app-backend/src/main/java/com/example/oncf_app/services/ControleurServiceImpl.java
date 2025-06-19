@@ -62,11 +62,9 @@ public class ControleurServiceImpl implements ControleurService {
         Controleur existingControleur = controleurRepository.findById(id)
                 .orElseThrow(() -> ApiException.notFound("Controleur", id));
 
-        // Only update certain fields
         existingControleur.setNom(controleurDTO.getNom());
         existingControleur.setPrenom(controleurDTO.getPrenom());
 
-        // Update antenne if needed
         if (controleurDTO.getAntenneId() != null) {
             Antenne antenne = antenneRepository.findById(controleurDTO.getAntenneId())
                     .orElseThrow(() -> ApiException.notFound("Antenne", controleurDTO.getAntenneId()));
@@ -114,7 +112,6 @@ public class ControleurServiceImpl implements ControleurService {
                 .orElseThrow(() -> ApiException.notFound("Controleur", controllerId));
 
         // Return epaves associated with this controleur
-        // This is a simplified implementation; you'd typically map to DTOs
         return controleur.getEpaves().stream()
                 .map(epave -> (Object) epave)
                 .collect(Collectors.toList());

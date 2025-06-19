@@ -1,4 +1,3 @@
-// src/components/SidebarUserInfo.jsx
 import { useAuth } from '../hooks/useAuth';
 
 function SidebarUserInfo() {

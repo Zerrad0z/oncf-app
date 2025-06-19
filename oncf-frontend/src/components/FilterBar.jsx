@@ -1,4 +1,3 @@
-// src/components/FilterBar.jsx
 import { useState, useEffect } from 'react';
 import { FaFilter, FaSearch, FaCalendarAlt, FaTimes } from 'react-icons/fa';
 import '../styles/FormStyles.css';
@@ -6,7 +5,6 @@ import '../styles/FormStyles.css';
 function FilterBar({ onApplyFilters, filterOptions = [], initialValues = {} }) {
   const [filters, setFilters] = useState(initialValues);
 
-  // Initialize filters based on provided options
   useEffect(() => {
     const initialFilters = {};
     filterOptions.forEach(option => {

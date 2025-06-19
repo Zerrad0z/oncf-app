@@ -1,4 +1,3 @@
-// src/pages/controleurs/ControleursList.jsx
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { controleurService, epaveService, cartePerimeeService, ficheInfractionService } from '../../services/api';
@@ -24,8 +23,6 @@ function ControleursList() {
         // Fetch statistics for each controleur
         const statsMap = {};
         
-        // This would be better done with a single API call in a real application
-        // but for now we'll simulate with separate calls
         for (const controleur of controleursData) {
           try {
             const [epaves, cartes, fiches] = await Promise.all([
@@ -141,14 +138,14 @@ function ControleursList() {
         filters={filters}
         loading={loading}
         error={error}
-        title="Contrôleurs"
+        title="ACT"
         addButtonText="Ajouter un contrôleur"
         addButtonPath="/controleurs/new"
         noDataMessage="Aucun contrôleur trouvé"
         actions={{
           edit: true,
           view: true,
-          delete: false,
+          delete: true,
           basePath: '/controleurs',
           viewPath: (item) => `/controleurs/${item.id}/details`
         }}

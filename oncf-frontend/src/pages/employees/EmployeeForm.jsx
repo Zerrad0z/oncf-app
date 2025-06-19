@@ -1,4 +1,3 @@
-// src/pages/employees/EmployeeForm.jsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { employeeService, antenneService } from '../../services/api';
@@ -54,11 +53,10 @@ function EmployeeForm() {
           const employeeResponse = await employeeService.getById(id);
           const employeeData = employeeResponse.data;
           
-          // Map the employee data to our form
           setFormData({
             id: employeeData.id || '',
             username: employeeData.username || '',
-            password: '',  // Don't populate password for security
+            password: '',  
             nom: employeeData.nom || '',
             prenom: employeeData.prenom || '',
             role: employeeData.role || '',
@@ -103,7 +101,6 @@ function EmployeeForm() {
         throw new Error('Le nom d\'utilisateur, mot de passe et matricule sont requis pour un nouvel employé.');
       }
 
-      // For new employee creation, use the register endpoint format
       if (!isEditMode) {
         const registerData = {
           username: formData.username,
@@ -119,7 +116,6 @@ function EmployeeForm() {
         await employeeService.create(registerData);
         setSuccessMessage(`L'employé ${formData.prenom} ${formData.nom} a été créé avec succès!`);
       } else {
-        // For editing, use the employee update endpoint
         const updateData = {
           id: formData.id,
           nom: formData.nom,
@@ -314,6 +310,8 @@ function EmployeeForm() {
         title={isEditMode ? "Modification réussie" : "Création réussie"}
         autoCloseTime={3000}
       />
+
+      
     </div>
   );
 }

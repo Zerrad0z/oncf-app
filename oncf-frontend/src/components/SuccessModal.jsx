@@ -1,4 +1,3 @@
-// src/components/SuccessModal.jsx
 import React, { useEffect } from 'react';
 import { FaCheckCircle, FaTimes } from 'react-icons/fa';
 import './SuccessModal.css';

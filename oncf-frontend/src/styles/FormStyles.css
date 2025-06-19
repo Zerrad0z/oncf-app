@@ -10,10 +10,10 @@
 }
 
 .form-header {
-  background: linear-gradient(135deg, #0f4c81 0%, #1976d2 100%);
+  background: linear-gradient(135deg, #3D3D3D 0%, #FFA726 100%);
   padding: 20px 24px;
   color: white;
-  box-shadow: 0 4px 12px rgba(15, 76, 129, 0.15);
+  box-shadow: 0 4px 12px rgba(255, 167, 38, 0.15);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -78,9 +78,9 @@
 
 .form-section-header {
   padding: 12px 16px;
-  background-color: #f5f9ff;
+  background-color: #FFF8E1; /* Cream background */
   font-weight: 600;
-  color: #333;
+  color: #3D3D3D; /* Dark gray text */
   font-size: 16px;
   display: flex;
   align-items: center;
@@ -89,7 +89,7 @@
 
 .form-section-header svg {
   margin-right: 8px;
-  color: #1976d2;
+  color: #FFA726; /* Orange icon */
 }
 
 .form-section-content {
@@ -141,7 +141,7 @@
   font-size: 15px;
   line-height: 1.5;
   color: #333;
-  background-color: #fff;
+  background-color: #FFF8E1; /* Cream background */
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   transition: all 0.2s;
@@ -149,8 +149,8 @@
 
 .form-control:focus {
   outline: none;
-  border-color: #1976d2;
-  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+  border-color: #FFA726; /* Orange border on focus */
+  box-shadow: 0 0 0 3px rgba(255, 167, 38, 0.1); /* Light orange shadow */
 }
 
 .form-control:disabled,
@@ -201,9 +201,9 @@ textarea.form-control {
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: 10px;
   padding: 16px 24px;
-  background-color: #f5f9ff;
+  background-color: #FFF8E1; /* Cream background */
   border-top: 1px solid #eaeaea;
 }
 
@@ -231,15 +231,15 @@ textarea.form-control {
 
 .btn-primary {
   color: white;
-  background-color: #1976d2;
+  background-color: #FFA726; /* Orange primary button */
 }
 
 .btn-primary:hover {
-  background-color: #0f4c81;
+  background-color: #FF9800; /* Darker orange on hover */
 }
 
 .btn-primary:disabled {
-  background-color: #90caf9;
+  background-color: #FFD180; /* Light orange disabled state */
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
@@ -248,31 +248,31 @@ textarea.form-control {
 
 .btn-secondary {
   color: white;
-  background-color: #616161;
+  background-color: #3D3D3D; /* Dark gray button */
 }
 
 .btn-secondary:hover {
-  background-color: #424242;
+  background-color: #2D2D2D; /* Darker gray on hover */
 }
 
 .btn-outline-secondary {
-  color: #616161;
+  color: #3D3D3D; /* Dark gray text */
   background-color: transparent;
-  border: 1px solid #616161;
+  border: 1px solid #3D3D3D; /* Dark gray border */
 }
 
 .btn-outline-secondary:hover {
   color: white;
-  background-color: #616161;
+  background-color: #3D3D3D; /* Dark gray background on hover */
 }
 
 .btn-success {
   color: white;
-  background-color: #4caf50;
+  background-color: #4DB6AC; /* Teal button */
 }
 
 .btn-success:hover {
-  background-color: #388e3c;
+  background-color: #3D9E93; /* Darker teal on hover */
 }
 
 .btn-danger {
@@ -299,18 +299,18 @@ textarea.form-control {
 }
 
 .status-badge.warning {
-  background-color: #fff8e1;
-  color: #ff8f00;
+  background-color: #FFF8E1; /* Cream */
+  color: #FFA726; /* Orange */
 }
 
 .status-badge.success {
   background-color: #e8f5e9;
-  color: #388e3c;
+  color: #4DB6AC; /* Teal */
 }
 
 .status-badge.info {
   background-color: #e3f2fd;
-  color: #1976d2;
+  color: #FFA726; /* Orange */
 }
 
 /* Short form for quick use */

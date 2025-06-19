@@ -1,4 +1,3 @@
-// src/components/QuickSearchForm.jsx
 import { useState } from 'react';
 import { FaSearch, FaCalendarAlt, FaFilter } from 'react-icons/fa';
 import '../styles/FormStyles.css';
@@ -127,5 +126,3 @@ function QuickSearchForm({ onSearch }) {
 
 export default QuickSearchForm;
 
-// Example usage:
-// <QuickSearchForm onSearch={(searchData) => console.log(searchData)} />

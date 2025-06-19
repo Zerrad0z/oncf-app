@@ -21,6 +21,6 @@ public class Antenne {
     private String nom;
 
     @OneToMany(mappedBy = "antenne")
-    @JsonManagedReference("antenne-employee") // Add this
+    @JsonManagedReference("antenne-employee")
     private List<Employee> employees = new ArrayList<>();
 }

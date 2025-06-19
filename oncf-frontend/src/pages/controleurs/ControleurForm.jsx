@@ -23,7 +23,7 @@ function ControleurForm() {
   const [error, setError] = useState(null);
 
   // State for success modal
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
   // Fetch antennes on component mount
@@ -66,10 +66,9 @@ function ControleurForm() {
     const fetchAntennes = async () => {
       try {
         const response = await antenneService.getAll();
-        console.log('Raw API Response:', response.data); // Debugging
+        console.log('Raw API Response:', response.data); 
   
         if (Array.isArray(response.data)) {
-          // Now we can just set the entire array since `Employee` includes `antenne` as a nested object.
           const cleanedAntennes = response.data.map(antenne => ({
             id: antenne.id,
             nom: antenne.nom
@@ -117,8 +116,8 @@ function ControleurForm() {
 
       const dataToSubmit = {
         ...formData,
-        id: formData.id, // Keep as string for Controleur
-        antenneId: parseInt(formData.antenneId, 10) // Ensure it's a number
+        id: formData.id, 
+        antenneId: parseInt(formData.antenneId, 10) 
       };
 
       console.log('Submitting controleur data:', dataToSubmit);
@@ -131,7 +130,8 @@ function ControleurForm() {
         setSuccessMessage(`Le contrôleur ${formData.prenom} ${formData.nom} a été créé avec succès!`);
       }
 
-      setShowSuccessModal(true);
+      setIsModalOpen(true);
+      setSubmitting(false);
 
     } catch (err) {
       console.error('Error saving controleur:', err);
@@ -141,8 +141,8 @@ function ControleurForm() {
   };
 
   // Handle modal close and redirect
-  const handleSuccessModalClose = () => {
-    setShowSuccessModal(false);
+  const handleModalClose = () => {
+    setIsModalOpen(false);
     navigate('/controleurs');
   };
 
@@ -238,10 +238,13 @@ function ControleurForm() {
         </button>
       </form>
 
+      {/* Updated SuccessModal implementation */}
       <SuccessModal
-        show={showSuccessModal}
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
         message={successMessage}
-        onClose={handleSuccessModalClose}
+        title={isEditMode ? "Modification réussie" : "Création réussie"}
+        autoCloseTime={3000}
       />
     </div>
   );

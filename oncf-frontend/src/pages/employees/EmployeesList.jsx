@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { employeeService, epaveService, cartePerimeeService, ficheInfractionService } from '../../services/api';
 import DataTable from '../../components/DataTable';
+import SuccessModal from '../../components/SuccessModal';
 import './EmployeesList.css';
 import { FaChartBar, FaFileAlt, FaCreditCard, FaBoxOpen, FaUserShield } from 'react-icons/fa';
 
@@ -12,55 +13,57 @@ function EmployeesList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        // Fetch employees
-        const response = await employeeService.getAll();
-        const employeesData = response.data;
-        setEmployees(employeesData);
-        
-        // Fetch statistics for each employee
-        const statsMap = {};
-        
-        // This would be better done with a single API call in a real application
-        // but for now we'll simulate with separate calls
-        for (const employee of employeesData) {
-          try {
-            const [epaves, cartes, fiches] = await Promise.all([
-              epaveService.getByAgentCom(employee.id),
-              cartePerimeeService.getByAgentCom(employee.id),
-              ficheInfractionService.getByAgentCom(employee.id)
-            ]);
-            
-            statsMap[employee.id] = {
-              epavesCount: epaves.data.length,
-              cartesCount: cartes.data.length,
-              fichesCount: fiches.data.length,
-              totalItems: epaves.data.length + cartes.data.length + fiches.data.length
-            };
-          } catch (statError) {
-            console.error(`Error fetching stats for employee ${employee.id}:`, statError);
-            statsMap[employee.id] = {
-              epavesCount: 0,
-              cartesCount: 0,
-              fichesCount: 0,
-              totalItems: 0
-            };
-          }
+  // Success Modal state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      // Fetch employees
+      const response = await employeeService.getAll();
+      const employeesData = response.data;
+      setEmployees(employeesData);
+      
+      // Fetch statistics for each employee
+      const statsMap = {};
+      
+      for (const employee of employeesData) {
+        try {
+          const [epaves, cartes, fiches] = await Promise.all([
+            epaveService.getByAgentCom(employee.id),
+            cartePerimeeService.getByAgentCom(employee.id),
+            ficheInfractionService.getByAgentCom(employee.id)
+          ]);
+          
+          statsMap[employee.id] = {
+            epavesCount: epaves.data.length,
+            cartesCount: cartes.data.length,
+            fichesCount: fiches.data.length,
+            totalItems: epaves.data.length + cartes.data.length + fiches.data.length
+          };
+        } catch (statError) {
+          console.error(`Error fetching stats for employee ${employee.id}:`, statError);
+          statsMap[employee.id] = {
+            epavesCount: 0,
+            cartesCount: 0,
+            fichesCount: 0,
+            totalItems: 0
+          };
         }
-        
-        setEmployeeStats(statsMap);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching employees:', err);
-        setError('Erreur lors du chargement des employés.');
-      } finally {
-        setLoading(false);
       }
-    };
-    
+      
+      setEmployeeStats(statsMap);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching employees:', err);
+      setError('Erreur lors du chargement des employés.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
     fetchData();
   }, []);
   
@@ -72,6 +75,31 @@ function EmployeesList() {
       case 'CHEF_ANTE': return 'Chef d\'Antenne';
       default: return role;
     }
+  };
+
+  // Handle employee deletion
+  const handleDeleteEmployee = async (employee) => {
+    try {
+      await employeeService.delete(employee.id);
+      
+      // Update the success message and show the modal
+      setSuccessMessage(`L'utilisateur ${employee.prenom} ${employee.nom} a été supprimé avec succès.`);
+      setIsModalOpen(true);
+      
+      // Refresh the employee list
+      fetchData();
+      
+      return true; // Return true to indicate successful deletion
+    } catch (error) {
+      console.error('Failed to delete employee:', error);
+      setError(`Erreur lors de la suppression: ${error.message || 'Une erreur est survenue'}`);
+      return false; // Return false to indicate failed deletion
+    }
+  };
+
+  // Handle modal close
+  const handleModalClose = () => {
+    setIsModalOpen(false);
   };
   
   // Define columns for the DataTable
@@ -181,10 +209,22 @@ function EmployeesList() {
         actions={{
           edit: true,
           view: true,
-          delete: false,
+          delete: true,
           basePath: '/employees',
-          viewPath: (item) => `/employees/${item.id}/details`
+          viewPath: (item) => `/employees/${item.id}/details`,
+          onDelete: handleDeleteEmployee
         }}
+        confirmDelete={true}
+        deleteConfirmMessage="Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible."
+      />
+      
+      {/* Success modal for delete confirmation */}
+      <SuccessModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        message={successMessage}
+        title="Suppression réussie"
+        autoCloseTime={3000}
       />
     </div>
   );

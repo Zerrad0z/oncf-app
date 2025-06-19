@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { FaTachometerAlt, FaBoxOpen, FaFileContract, FaCreditCard, FaUsers, FaIdBadge, FaBars, FaTimes, FaSignOutAlt, FaChevronRight } from 'react-icons/fa';
 import { useAuth } from '../hooks/useAuth';
+import oncfLogo from '../assets/oncf.png';
 
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -73,7 +74,7 @@ function Layout() {
       <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
         <div className="sidebar-header">
           <div className="logo">
-            <img src="/logo-oncf.png" alt="ONCF Logo" className="logo-img" />
+            <img src={oncfLogo} alt="ONCF Logo" className="logo-img" />
             <span className="logo-text">ONCF Report</span>
           </div>
           <button className="sidebar-close-btn" onClick={toggleSidebar}>
@@ -151,7 +152,7 @@ function Layout() {
           <Outlet />
         </main>
         <footer className="footer">
-          <p>&copy; 2025 ONCF Report System</p>
+          <p>&copy; 2025 Zerrad Youssef</p>
         </footer>
       </div>
     </div>

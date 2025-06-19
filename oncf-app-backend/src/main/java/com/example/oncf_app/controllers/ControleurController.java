@@ -54,7 +54,6 @@ public class ControleurController {
         return ResponseEntity.ok(controleurService.searchControleursByName(query, antenneId));
     }
 
-    // Additional endpoints for related items
     @GetMapping("/{id}/epaves")
     public ResponseEntity<List<Object>> getControleurEpaves(@PathVariable String id) {
         return ResponseEntity.ok(controleurService.getControleurEpaves(id));

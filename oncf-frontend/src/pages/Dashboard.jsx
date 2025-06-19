@@ -1,4 +1,3 @@
-// src/pages/Dashboard.jsx
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { epaveService, ficheInfractionService, cartePerimeeService } from '../services/api';
@@ -68,7 +67,6 @@ function Dashboard() {
           newStats.epaves.thisMonth = monthlyEpavesResponse.data.length;
         } catch (err) {
           console.error('Error fetching epaves stats:', err);
-          // Use some placeholder data
           newStats.epaves = { total: 24, thisWeek: 5, thisMonth: 12 };
         }
         
@@ -77,7 +75,6 @@ function Dashboard() {
           const ficheResponse = await ficheInfractionService.getAll();
           newStats.ficheInfractions.total = ficheResponse.data.length;
           
-          // Only try these if getByDateRange exists
           if (typeof ficheInfractionService.getByDateRange === 'function') {
             const weeklyFicheResponse = await ficheInfractionService.getByDateRange(startOfWeekFormatted, todayFormatted);
             newStats.ficheInfractions.thisWeek = weeklyFicheResponse.data.length;
@@ -87,7 +84,6 @@ function Dashboard() {
           }
         } catch (err) {
           console.error('Error fetching fiche infractions stats:', err);
-          // Use some placeholder data
           newStats.ficheInfractions = { total: 132, thisWeek: 28, thisMonth: 67 };
         }
         
@@ -96,7 +92,6 @@ function Dashboard() {
           const carteResponse = await cartePerimeeService.getAll();
           newStats.cartePerimees.total = carteResponse.data.length;
           
-          // Only try these if getByDateRange exists
           if (typeof cartePerimeeService.getByDateRange === 'function') {
             const weeklyCarteResponse = await cartePerimeeService.getByDateRange(startOfWeekFormatted, todayFormatted);
             newStats.cartePerimees.thisWeek = weeklyCarteResponse.data.length;

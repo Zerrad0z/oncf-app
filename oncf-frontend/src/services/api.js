@@ -1,7 +1,5 @@
-// src/services/api.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080'; // Remove /api since it's included in specific paths
 
 const api = axios.create({
   baseURL: API_URL,

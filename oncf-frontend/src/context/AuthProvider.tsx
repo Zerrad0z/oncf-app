@@ -1,4 +1,3 @@
-// src/context/AuthProvider.tsx
 import React, { useState, useEffect, ReactNode } from 'react';
 import AuthContext, { AuthContextType } from './AuthContext';
 import { AuthUser, Role } from '../types';

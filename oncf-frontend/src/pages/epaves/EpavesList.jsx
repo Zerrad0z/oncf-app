@@ -1,4 +1,3 @@
-// src/pages/epaves/EpavesList.jsx
 import { useState, useEffect } from 'react';
 import { epaveService } from '../../services/api';
 import DataTable from '../../components/DataTable';
@@ -139,8 +138,8 @@ function EpavesList() {
       actions={{
         edit: true,
         view: false,
-        delete: true, // Enable delete
-        onDelete: handleDelete, // Add the delete handler
+        delete: true, 
+        onDelete: handleDelete, 
         basePath: '/epaves'
       }}
     />

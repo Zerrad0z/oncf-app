@@ -1,4 +1,3 @@
-// src/pages/cartes/CarteForm.jsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { cartePerimeeService } from '../../services/api';
@@ -161,7 +160,7 @@ function CarteForm() {
     
     // Validate controllerId
     if (!formData.controllerId) {
-      newValidation.controllerId = { valid: false, message: 'Le contrôleur est requis' };
+      newValidation.controllerId = { valid: false, message: 'Le ACT est requis' };
       isValid = false;
     }
     
@@ -414,7 +413,7 @@ function CarteForm() {
               </div>
               
               <div className="form-group full-width">
-                <label htmlFor="controllerId">Contrôleur <span className="required">*</span></label>
+                <label htmlFor="controllerId">ACT <span className="required">*</span></label>
                 <ControleurSelect
                   id="controllerId"
                   name="controllerId"

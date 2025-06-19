@@ -343,3 +343,39 @@
       text-align: center;
     }
   }
+  /* Add these styles to your DataTable.css file */
+
+.export-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #4DB6AC; /* Teal to match your color scheme */
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.export-button:hover {
+  background-color: #3D9E93; /* Darker teal on hover */
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive design for the export button */
+@media (max-width: 1024px) {
+  .export-button-text {
+    display: none;
+  }
+  
+  .export-button {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    justify-content: center;
+  }
+}

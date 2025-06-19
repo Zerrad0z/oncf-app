@@ -1,5 +1,3 @@
-// src/types/index.ts
-
 export type Role = 'AGENT_COM' | 'CHEF_SECT' | 'CHEF_ANTE';
 
 export interface Antenne {

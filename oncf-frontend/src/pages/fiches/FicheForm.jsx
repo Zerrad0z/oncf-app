@@ -1,4 +1,3 @@
-// src/pages/fiches/FicheForm.jsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ficheInfractionService } from '../../services/api';
@@ -164,7 +163,7 @@ function FicheForm() {
     
     // Validate controllerId
     if (!formData.controllerId) {
-      newValidation.controllerId = { valid: false, message: 'Le contrôleur est requis' };
+      newValidation.controllerId = { valid: false, message: 'Le ACT est requis' };
       isValid = false;
     }
     

@@ -1,64 +1,66 @@
-//package com.example.oncf_app.config;
-//
-//import com.example.oncf_app.entities.Antenne;
-//import com.example.oncf_app.entities.Controleur;
-//import com.example.oncf_app.entities.Employee;
-//import com.example.oncf_app.enums.Role;
-//import com.example.oncf_app.repositories.AntenneRepository;
-//import com.example.oncf_app.repositories.ControleurRepository;
-//import com.example.oncf_app.repositories.EmployeeRepository;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.CommandLineRunner;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.stereotype.Component;
-//
-//@Component
-//public class DataInitializer implements CommandLineRunner {
-//
-//    @Autowired
-//    private EmployeeRepository employeeRepository;
-//
-//    @Autowired
-//    private AntenneRepository antenneRepository;
-//
-//    @Autowired
-//    private ControleurRepository controleurRepository;
-//
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
-//
-//    @Override
-//    public void run(String... args) throws Exception {
-//
-//        // Initialize antennes
-//        if (antenneRepository.count() == 0) {
-//            Antenne rabatAntenne = new Antenne();
-//            rabatAntenne.setNom("Rabat Ville");
-//            antenneRepository.save(rabatAntenne);
-//
-//            Antenne casaAntenne = new Antenne();
-//            casaAntenne.setNom("Casablanca Voyageurs");
-//            antenneRepository.save(casaAntenne);
-//
-//            System.out.println("Initial antennes created successfully");
-//        }
-//
-//        // Get the antennes for reference
-//        Antenne rabatAntenne = antenneRepository.findByNom("Rabat Ville");
-//        Antenne casaAntenne = antenneRepository.findByNom("Casablanca Voyageurs");
-//        // Check if we need to initialize data
-//        if (employeeRepository.count() == 0) {
-//            // Create admin employee
-//            Employee adminEmployee = new Employee();
-//            adminEmployee.setId("1");
-//            adminEmployee.setUsername("admin");
-//            adminEmployee.setPassword(passwordEncoder.encode("admin"));
-//            adminEmployee.setNom("System");
-//            adminEmployee.setPrenom("Administrator");
-//            adminEmployee.setRole(Role.CHEF_ANTE);
-//            adminEmployee.setAntenne(rabatAntenne);
-//            employeeRepository.save(adminEmployee);
-//
+package com.example.oncf_app.config;
+
+import com.example.oncf_app.entities.Antenne;
+import com.example.oncf_app.entities.Employee;
+import com.example.oncf_app.enums.Role;
+import com.example.oncf_app.repositories.AntenneRepository;
+import com.example.oncf_app.repositories.ControleurRepository;
+import com.example.oncf_app.repositories.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+@Component
+public class DataInitializer implements CommandLineRunner {
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private AntenneRepository antenneRepository;
+
+    @Autowired
+    private ControleurRepository controleurRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Override
+    public void run(String... args) throws Exception {
+
+        // Initialize antennes
+        if (antenneRepository.count() == 0) {
+            Antenne rabatAntenne = new Antenne();
+            rabatAntenne.setNom("Antenne proximité KENITRA");
+            antenneRepository.save(rabatAntenne);
+
+            Antenne casaAntenne = new Antenne();
+            casaAntenne.setNom("Antenne proximité CASA PORT");
+            antenneRepository.save(casaAntenne);
+
+
+
+
+            System.out.println("Initial antennes created successfully");
+        }
+
+        // Get the antennes for reference
+        Antenne rabatAntenne = antenneRepository.findByNom("Antenne proximité KENITRA");
+        Antenne casaAntenne = antenneRepository.findByNom("Antenne proximité CASA PORT");
+        // Check if we need to initialize data
+        if (employeeRepository.count() == 0) {
+            // Create admin employee
+            Employee adminEmployee = new Employee();
+            adminEmployee.setId("1");
+            adminEmployee.setUsername("admin");
+            adminEmployee.setPassword(passwordEncoder.encode("admin"));
+            adminEmployee.setNom("System");
+            adminEmployee.setPrenom("Administrator");
+            adminEmployee.setRole(Role.CHEF_ANTE);
+            adminEmployee.setAntenne(rabatAntenne);
+            employeeRepository.save(adminEmployee);
+
 //            // Create agent employee
 //            Employee agentEmployee = new Employee();
 //            agentEmployee.setId("2");
@@ -82,8 +84,8 @@
 //            employeeRepository.save(chefSectEmployee);
 //
 //            System.out.println("Initial employees created successfully");
-//        }
-//
+        }
+
 //        // Initialize Controleurs (Employees)
 //        if (controleurRepository.count() == 0) {
 //            Controleur controleur1 = new Controleur("12345", "Benjelloun", "Karim", rabatAntenne, null, null, null);
@@ -101,6 +103,5 @@
 //            controleurRepository.save(controleur6);
 //
 //            System.out.println("Initial controleurs created successfully");
-//        }
-//    }
-//}
+        }
+    }

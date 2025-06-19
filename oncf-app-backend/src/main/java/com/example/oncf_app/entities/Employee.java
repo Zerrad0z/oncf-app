@@ -37,7 +37,7 @@ public class Employee implements UserDetails {
 
     @ManyToOne
     @JoinColumn(name = "antenne_id")
-    @JsonBackReference("antenne-employee") // Add this
+    @JsonBackReference("antenne-employee")
     private Antenne antenne;
 
     @OneToMany(mappedBy = "agentCom")
@@ -49,7 +49,6 @@ public class Employee implements UserDetails {
     @OneToMany(mappedBy = "agentCom")
     private List<CartePerimee> cartePerimeeEntries;
 
-    // Implement UserDetails methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));

@@ -1,4 +1,3 @@
-// src/pages/cartes/CartesList.jsx
 import { useState, useEffect } from 'react';
 import { cartePerimeeService } from '../../services/api';
 import DataTable from '../../components/DataTable';
@@ -26,7 +25,6 @@ function CartesList() {
     fetchCartes();
   }, []);
   
-  // Define columns for the DataTable
   const columns = [
     {
       id: 'date',
@@ -85,7 +83,6 @@ function CartesList() {
     }
   ];
   
-  // Define filters for the DataTable
   const filters = [
     {
       id: 'confort',
@@ -133,7 +130,6 @@ function CartesList() {
       .map(value => ({ value, label: value }));
   }
   
-  // Add this handleDelete function before the return statement
 const handleDelete = async (item) => {
   if (window.confirm(`Êtes-vous sûr de vouloir supprimer cette carte périmée ?`)) {
     try {
@@ -146,7 +142,6 @@ const handleDelete = async (item) => {
   }
 };
 
-// Then update your DataTable actions to include delete
 return (
   <DataTable
     data={cartes}
@@ -161,8 +156,8 @@ return (
     actions={{
       edit: true,
       view: false,
-      delete: true, // Enable delete
-      onDelete: handleDelete, // Add the delete handler
+      delete: true,
+      onDelete: handleDelete, 
       basePath: '/cartes-perimee'
     }}
   />

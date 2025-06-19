@@ -41,8 +41,8 @@ public class AuthService {
                 .id(request.getEmployeeId()) // If ID is set manually, otherwise generate
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .nom(request.getNom())  // Updated from getFullName()
-                .prenom(request.getPrenom())  // Added for first name
+                .nom(request.getNom())
+                .prenom(request.getPrenom())
                 .role(Role.valueOf(request.getRole()))
                 .antenne(request.getAntenneId() != null ?
                         antenneRepository.findById(request.getAntenneId())
@@ -83,7 +83,7 @@ public class AuthService {
                 .token(jwtToken)
                 .id(employee.getId())
                 .username(employee.getUsername())
-                .nom(employee.getNom())  // Changed from fullName
+                .nom(employee.getNom())
                 .prenom(employee.getPrenom())  // Include prenom
                 .role(employee.getRole())
                 .build();

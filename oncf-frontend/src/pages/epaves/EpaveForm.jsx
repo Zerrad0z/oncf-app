@@ -1,4 +1,3 @@
-// src/pages/epaves/EpaveForm.jsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { epaveService } from '../../services/api';
@@ -121,7 +120,7 @@ function EpaveForm() {
     
     // Validate controllerId
     if (!formData.controllerId) {
-      newValidation.controllerId = { valid: false, message: 'Le contrôleur est requis' };
+      newValidation.controllerId = { valid: false, message: 'Le ACT est requis' };
       isValid = false;
     }
     
@@ -314,7 +313,7 @@ function EpaveForm() {
             </div>
             <div className="form-section-content">
               <div className="form-group full-width">
-                <label htmlFor="controllerId">Contrôleur <span className="required">*</span></label>
+                <label htmlFor="controllerId">ACT <span className="required">*</span></label>
                 <ControleurSelect
                   id="controllerId"
                   name="controllerId"

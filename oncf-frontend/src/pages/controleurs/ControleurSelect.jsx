@@ -1,4 +1,3 @@
-// src/components/ControleurSelect.jsx
 import { useState, useEffect } from 'react';
 import { controleurService } from '../../services/api';
 import { useAuth } from '../../hooks/useAuth';

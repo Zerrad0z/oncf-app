@@ -1,4 +1,3 @@
-// src/pages/fiches/FichesList.jsx
 import { useState, useEffect } from 'react';
 import { ficheInfractionService } from '../../services/api';
 import DataTable from '../../components/DataTable';
@@ -19,7 +18,6 @@ function FichesList() {
         console.error('Error fetching fiches d\'infraction:', err);
         setError('Erreur lors du chargement des données. Veuillez réessayer.');
         
-        // For development/demo purposes only - remove in production
         setFiches([
           {
             id: 1,

@@ -1,10 +1,8 @@
-// src/components/Login.tsx
 import React, { useState, useContext } from 'react';
 import authService from '../services/authService';
 import AuthContext from '../context/AuthContext';
 import './Login.css'; // Import the CSS file
 
-// You can replace this with your actual logo
 import companyLogo from '../assets/logo.jpg'; 
 
 interface LoginFormData {
@@ -66,7 +64,6 @@ const Login: React.FC = () => {
 
   return (
     <div className="login-container">
-      {/* Optional: Company Logo */}
       <img src={companyLogo} alt="Company Logo" className="company-logo" />
       
       <h2>Welcome Back</h2>
@@ -100,7 +97,6 @@ const Login: React.FC = () => {
           />
         </div>
         
-        {/* Optional: Forgot Password Link */}
         <div className="forgot-password">
           <a href="/forgot-password">Forgot password?</a>
         </div>
@@ -109,7 +105,6 @@ const Login: React.FC = () => {
           {loading ? 'Signing in...' : 'Sign In'}
         </button>
         
-        {/* Optional: Divider and registration link */}
         <div className="divider">
           <span>or</span>
         </div>

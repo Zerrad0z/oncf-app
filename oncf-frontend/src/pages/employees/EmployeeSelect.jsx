@@ -1,4 +1,3 @@
-// src/components/EmployeeSelect.jsx
 import { useState, useEffect } from 'react';
 import { employeeService } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
@@ -10,7 +9,7 @@ function EmployeeSelect({
   id = 'agentComId', 
   name = 'agentComId', 
   required = false,
-  role = null, // Optional role filter 
+  role = null,  
   label = "Utilisateur" 
 }) {
   const [employees, setEmployees] = useState([]);

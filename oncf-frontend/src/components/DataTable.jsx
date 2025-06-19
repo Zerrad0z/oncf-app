@@ -1,8 +1,7 @@
-// src/components/DataTable.jsx
 import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './DataTable.css';
-// Import icons from react-icons
+import * as XLSX from 'xlsx';
 import { 
   FaEdit, 
   FaTrashAlt, 
@@ -17,27 +16,33 @@ import {
   FaChevronRight,
   FaChevronDown,
   FaTimes,
-  FaEllipsisV,
-  FaInfoCircle
+  FaInfoCircle,
+  FaFileExcel,
+  FaExclamationTriangle  
 } from 'react-icons/fa';
 
-// Import FilterBar component
 import FilterBar from './FilterBar';
 
 function DataTable({
   data = [],
   columns = [],
   filters = [],
-  actions = { edit: true, view: false, delete: false },
+  actions = { edit: true, view: false, delete: true },
+  onDelete = null, 
   loading = false,
   error = null,
   addButtonText = 'Ajouter',
   addButtonPath = '',
   noDataMessage = 'Aucun résultat trouvé',
   title = 'Données',
-  // Add new props for advanced filtering
   advancedFiltering = false,
-  advancedFilterOptions = []
+  advancedFilterOptions = [],
+  enableExport = true,
+  exportFilename = 'export.xlsx',
+  exportSheetName = 'Data',
+  confirmDelete = true,
+  deleteConfirmMessage = "Êtes-vous sûr de vouloir supprimer cet élément ?",
+  deleteSuccessMessage = "L'élément a été supprimé avec succès."
 }) {
   // State for filters and search
   const [activeFilters, setActiveFilters] = useState({});
@@ -59,6 +64,17 @@ function DataTable({
   
   // State for responsive design
   const [showFilters, setShowFilters] = useState(false);
+
+  // State for delete functionality
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteStatus, setDeleteStatus] = useState({ show: false, success: false, message: '' });
+  const [localData, setLocalData] = useState([]);
+  
+  // Initialize local data
+  useEffect(() => {
+    setLocalData(data);
+  }, [data]);
   
   // Effect to apply advanced filters to active filters
   useEffect(() => {
@@ -115,11 +131,76 @@ function DataTable({
     setAdvancedFilterValues({});
     setCurrentPage(1);
   };
+
+  // Handle delete click
+  const handleDeleteClick = (item) => {
+    setItemToDelete(item);
+    if (confirmDelete) {
+      setShowDeleteConfirm(true);
+    } else {
+      performDelete(item);
+    }
+  };
+
+  // Confirm delete
+  const confirmDeleteAction = () => {
+    performDelete(itemToDelete);
+    setShowDeleteConfirm(false);
+  };
+
+  // Cancel delete
+  const cancelDelete = () => {
+    setItemToDelete(null);
+    setShowDeleteConfirm(false);
+  };
+
+  // Perform delete
+  const performDelete = async (item) => {
+    try {
+      // If there's an external delete handler, use it
+      if (onDelete) {
+        const result = await onDelete(item);
+        
+        // If the delete handler returns false, don't update local state
+        if (result === false) {
+          return;
+        }
+      }
+      
+      // Update local data state (optimistic update)
+      setLocalData(prevData => prevData.filter(i => i.id !== item.id));
+      
+      // Show success message
+      setDeleteStatus({
+        show: true,
+        success: true,
+        message: deleteSuccessMessage
+      });
+      
+      // Hide success message after 3 seconds
+      setTimeout(() => {
+        setDeleteStatus({ show: false, success: false, message: '' });
+      }, 3000);
+      
+    } catch (error) {
+      // Show error message
+      setDeleteStatus({
+        show: true,
+        success: false,
+        message: `Erreur: ${error.message || "Impossible de supprimer l'élément."}`
+      });
+      
+      // Hide error message after 5 seconds
+      setTimeout(() => {
+        setDeleteStatus({ show: false, success: false, message: '' });
+      }, 5000);
+    }
+  };
   
   // Apply filters, search, and sorting to data
   const filteredData = useMemo(() => {
-    // Start with all data
-    let result = [...data];
+    // Start with all data (using local data state that can be modified by delete operations)
+    let result = [...localData];
     
     // Apply search filter across all columns
     if (searchTerm) {
@@ -158,7 +239,7 @@ function DataTable({
     }
     
     return result;
-  }, [data, searchTerm, activeFilters, sortConfig, filters]);
+  }, [localData, searchTerm, activeFilters, sortConfig, filters]);
   
   // Apply pagination
   const paginatedData = useMemo(() => {
@@ -182,7 +263,6 @@ function DataTable({
       pages.push(i);
     }
     
-    // Add first page if not already included
     if (pages[0] > 1) {
       if (pages[0] > 2) {
         pages.unshift('...');
@@ -190,7 +270,6 @@ function DataTable({
       pages.unshift(1);
     }
     
-    // Add last page if not already included
     if (pages[pages.length - 1] < totalPages) {
       if (pages[pages.length - 1] < totalPages - 1) {
         pages.push('...');
@@ -204,6 +283,56 @@ function DataTable({
   // Check if any filters are active
   const hasActiveFilters = searchTerm !== '' || Object.values(activeFilters).some(value => value !== '');
   
+  // EXCEL EXPORT FUNCTIONALITY
+  const handleExportToExcel = () => {
+    // Function to prepare data for export
+    const prepareDataForExport = () => {
+      // Create an array of column ids that should be exported
+      const exportableColumns = columns.filter(col => col.exportable !== false);
+      
+      // Create header row with column labels
+      const headerRow = exportableColumns.map(col => col.label);
+      
+      // Create data rows
+      const dataRows = filteredData.map(item => 
+        exportableColumns.map(col => {
+     
+          if (col.exportRender) {
+            return col.exportRender(item);
+          } else if (col.render && typeof col.render(item) === 'string') {
+            return col.render(item);
+          } else {
+            return item[col.id];
+          }
+        })
+      );
+      
+      // Combine headers and data
+      return [headerRow, ...dataRows];
+    };
+    
+    try {
+      // Prepare the data
+      const exportData = prepareDataForExport();
+      
+      // Create workbook and worksheet
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(exportData);
+      
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(wb, ws, exportSheetName);
+      
+      // Generate filename with date if not specified
+      const filename = exportFilename || `${title.toLowerCase().replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
+      
+      // Write and download the file
+      XLSX.writeFile(wb, filename);
+    } catch (error) {
+      console.error('Error exporting to Excel:', error);
+      alert('Une erreur est survenue lors de l\'exportation vers Excel.');
+    }
+  };
+  
   // Loading state
   if (loading) {
     return (
@@ -216,6 +345,62 @@ function DataTable({
   
   return (
     <div className="datatable-container">
+      {/* Delete confirmation modal */}
+      {showDeleteConfirm && (
+        <div className="delete-modal-overlay">
+          <div className="delete-modal">
+            <div className="delete-modal-header">
+              <FaExclamationTriangle className="delete-icon" />
+              <h2>Confirmation de suppression</h2>
+            </div>
+            <div className="delete-modal-body">
+              <p>{deleteConfirmMessage}</p>
+              {itemToDelete && columns.length > 0 && (
+                <div className="delete-item-info">
+                  {/* Display key information about the item being deleted */}
+                  <p>
+                    <strong>{columns[0].label}: </strong>
+                    {columns[0].render 
+                      ? columns[0].render(itemToDelete) 
+                      : itemToDelete[columns[0].id]}
+                  </p>
+                  {columns.length > 1 && (
+                    <p>
+                      <strong>{columns[1].label}: </strong>
+                      {columns[1].render 
+                        ? columns[1].render(itemToDelete) 
+                        : itemToDelete[columns[1].id]}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="delete-modal-footer">
+              <button 
+                className="btn btn-outline-secondary"
+                onClick={cancelDelete}
+              >
+                Annuler
+              </button>
+              <button 
+                className="btn btn-danger"
+                onClick={confirmDeleteAction}
+              >
+                Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete status message */}
+      {deleteStatus.show && (
+        <div className={`datatable-alert ${deleteStatus.success ? 'success' : 'error'}`}>
+          <FaInfoCircle className="alert-icon" />
+          <p>{deleteStatus.message}</p>
+        </div>
+      )}
+      
       <div className="datatable-header">
         <div className="header-title">
           <h1>{title}</h1>
@@ -229,6 +414,18 @@ function DataTable({
         </div>
         
         <div className="header-actions">
+          {/* Excel Export Button */}
+          {enableExport && filteredData.length > 0 && (
+            <button 
+              className="export-button"
+              onClick={handleExportToExcel}
+              title="Exporter vers Excel"
+            >
+              <FaFileExcel />
+              <span className="export-button-text">Exporter</span>
+            </button>
+          )}
+          
           {advancedFiltering && (
             <button 
               className={`filter-toggle-button ${showAdvancedFilters ? 'active' : ''}`}
@@ -450,12 +647,12 @@ function DataTable({
                         )}
                         {actions.delete && (
                           <button
-                            onClick={() => actions.onDelete && actions.onDelete(item)}
+                            onClick={() => handleDeleteClick(item)}
                             className="action-button delete-button"
                             title="Supprimer"
                             aria-label="Supprimer"
                           >
-                            <FaTrashAlt size={16} className="action-icon" />
+                            <FaTrashAlt size={12} className="action-icon" />
                           </button>
                         )}
                       </div>
